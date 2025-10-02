@@ -1,23 +1,25 @@
-// components/Header.tsx
 import { Flex, Text } from '@radix-ui/themes'
 import ThemeToggle from '../../theme/ThemeToggle'
 import LogoLight from '../../assets/CubosLogo.png'
 import LogoDark from '../../assets/CubosLogoDark.png'
 import { useTheme } from '../../context/useTheme'
 import MyButton from '../Button'
+import { useAuth } from '../../context/useAuth'
+import { useNavigate } from 'react-router-dom'
 
 export default function Header() {
   const { isDark } = useTheme()
-  const isLoggedIn = false
+  const { user, logout } = useAuth()
+  const isLoggedIn = !!user
+
+  const navigate = useNavigate()
   return (
     <Flex
       align='center'
       justify='between'
       px='4'
       py='3'
-      style={{
-        borderBottom: '1px solid var(--gray-a6)',
-      }}>
+      style={{ borderBottom: '1px solid var(--gray-a6)' }}>
       <Flex align='center' gap='2'>
         <img
           src={isDark ? LogoDark : LogoLight}
@@ -33,11 +35,13 @@ export default function Header() {
       <Flex align='center' gap='3'>
         <ThemeToggle />
         {isLoggedIn ? (
-          <MyButton variant='primary' color='red'>
+          <MyButton variant='primary' color='red' onClick={logout}>
             Logout
           </MyButton>
         ) : (
-          <MyButton variant='primary'>Login</MyButton>
+          <MyButton variant='primary' onClick={() => navigate('/auth')}>
+            Login
+          </MyButton>
         )}
       </Flex>
     </Flex>

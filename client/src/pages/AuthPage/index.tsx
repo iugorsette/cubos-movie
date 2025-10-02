@@ -2,7 +2,13 @@ import { useState } from 'react'
 import { Card, Flex } from '@radix-ui/themes'
 import MyButton from '../../components/Button'
 import MyInput from '../../components/Input'
-import { forgotPassword, login, register } from '../../services/auth.service'
+import {
+  forgotPassword,
+  loginService,
+  register,
+} from '../../services/auth.service'
+import { useAuth } from '../../context/useAuth'
+import { useNavigate } from 'react-router-dom'
 
 type Mode = 'login' | 'register' | 'forgot'
 
@@ -17,9 +23,13 @@ export default function AuthPage() {
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
 
+  const { login: loginContext } = useAuth()
+  const navigate = useNavigate()
+
   function handleChange(field: string, value: string) {
     setForm((prev) => ({ ...prev, [field]: value }))
   }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setError(null)
@@ -27,18 +37,24 @@ export default function AuthPage() {
 
     try {
       if (mode === 'login') {
-        await login({ email: form.email, password: form.password })
-        window.location.href = '/filmes'
+        const data = await loginService({
+          email: form.email,
+          password: form.password,
+        })
+
+        console.log('loginService return', data)
+        loginContext(data.user, data.token)
+        navigate('/filmes') // redireciona após login
       }
 
       if (mode === 'register') {
-        await register({
+        const data = await register({
           name: form.name,
           email: form.email,
           password: form.password,
         })
-        alert('Cadastro realizado com sucesso! Faça login.')
-        setMode('login')
+        loginContext(data.user, data.token) 
+        navigate('/filmes')
       }
 
       if (mode === 'forgot') {

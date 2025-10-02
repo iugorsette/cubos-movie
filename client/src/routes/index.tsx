@@ -5,7 +5,7 @@ import MovieDetail from '../pages/MovieDetail'
 
 export default function AppRoutes() {
   return (
-    <BrowserRouter>
+    // <BrowserRouter>
       <Routes>
         <Route path='/login' element={<AuthPage />} />
         <Route path='/filmes' element={<Filmes />} />
@@ -13,6 +13,6 @@ export default function AppRoutes() {
 
         <Route path='*' element={<Navigate to='/login' />} />
       </Routes>
-    </BrowserRouter>
+    // </BrowserRouter>
   )
 }

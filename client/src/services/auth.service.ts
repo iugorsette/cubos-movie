@@ -11,7 +11,7 @@ interface RegisterData {
 
 const BASE_URL = "http://localhost:3000/auth";
 
-export async function login(data: LoginData) {
+export async function loginService(data: LoginData) {
   const res = await fetch(`${BASE_URL}/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },

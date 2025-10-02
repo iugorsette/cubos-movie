@@ -4,13 +4,18 @@ import { Flex, Button, Text } from '@radix-ui/themes'
 import { getMovieById } from '../../services/movies.service'
 import type { Movie } from '../../types/movie'
 import { useTheme } from '../../context/useTheme'
+import MovieModal from '../../components/MovieModal'
+import { useAuth } from '../../context/useAuth'
 
 export default function MovieDetail() {
   const { id } = useParams()
   const navigate = useNavigate()
   const { isDark } = useTheme() // 'dark' | 'light'
+  const { user, token } = useAuth()
   const [movie, setMovie] = useState<Movie | null>(null)
+  const [editOpen, setEditOpen] = useState(false)
 
+  const isOwner = user?.id === movie?.createdBy
   useEffect(() => {
     if (id) fetchMovie()
   }, [id])
@@ -72,11 +77,13 @@ export default function MovieDetail() {
           </Flex>
           <Flex gap='3' style={{ marginTop: '24px' }}>
             <Button
+              disabled={!isOwner}
               onClick={() => alert('Editar')}
               style={{ background: '#9333ea' }}>
               Editar
             </Button>
             <Button
+              disabled={!isOwner}
               onClick={() => alert('Deletar')}
               style={{ background: '#dc2626' }}>
               Deletar
@@ -244,6 +251,15 @@ export default function MovieDetail() {
           </div>
         </div>
       )}
+
+       {/* Modal de edição */}
+      <MovieModal
+        isOpen={editOpen}
+        onClose={() => setEditOpen(false)}
+        initialData={movie}
+        token={token as string}
+        onSaved={fetchMovie}
+      />
     </div>
   )
 }
