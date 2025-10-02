@@ -53,6 +53,21 @@ export default function MovieModal({
   const [capaFundoPreview, setCapaFundoPreview] = useState<string | null>(
     initialData?.capaFundo || null
   )
+  const [generos, setGeneros] = useState<string[]>(form.generos || [])
+  const [newGenero, setNewGenero] = useState('')
+
+  function addGenero() {
+    const g = newGenero.trim()
+    if (!g) return
+    if (generos.includes(g)) return // evita duplicados
+    if (generos.length >= 10) return // limite de 10
+    setGeneros([...generos, g])
+    setNewGenero('')
+  }
+  function removeGenero(g: string) {
+    setGeneros(generos.filter((x) => x !== g))
+  }
+
   const formRef = useRef<HTMLFormElement>(null)
 
   useEffect(() => {
@@ -76,6 +91,7 @@ export default function MovieModal({
     setLoading(true)
 
     try {
+      form.generos = generos
       const formData = new FormData()
       Object.entries(form).forEach(([key, value]) => {
         if (value === undefined || value === null) return
@@ -244,17 +260,78 @@ export default function MovieModal({
                   value={form.duracao}
                   onChange={(e) => handleChange('duracao', e.target.value)}
                 />
-                <MyInput
-                  label='Gêneros'
-                  placeholder='Separados por vírgula'
-                  value={form.generos.join(',')}
-                  onChange={(e) =>
-                    handleChange(
-                      'generos',
-                      e.target.value.split(',').map((g) => g.trim())
-                    )
-                  }
-                />
+                <div style={{ marginBottom: 12, width: '100%' }}>
+                  <strong>Gêneros:</strong>
+                  <div
+                    style={{
+                      display: 'flex',
+                      flexWrap: 'wrap',
+                      gap: 8,
+                      marginTop: 4,
+                    }}>
+                    {generos.map((g) => (
+                      <div
+                        key={g}
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          backgroundColor: isDark ? '#333' : '#eee',
+                          padding: '4px 8px',
+                          borderRadius: 16,
+                          fontSize: 13,
+                        }}>
+                        {g}
+                        <button
+                          type='button'
+                          onClick={() => removeGenero(g)}
+                          style={{
+                            marginLeft: 4,
+                            background: 'transparent',
+                            border: 'none',
+                            cursor: 'pointer',
+                            color: 'red',
+                            fontWeight: 'bold',
+                          }}>
+                          ×
+                        </button>
+                      </div>
+                    ))}
+                    {generos.length < 10 && (
+                      <div
+                        style={{
+                          display: 'flex',
+                          gap: 4,
+                          alignItems: 'center',
+                        }}>
+                        <input
+                          type='text'
+                          value={newGenero}
+                          onChange={(e) => setNewGenero(e.target.value)}
+                          placeholder='Novo gênero'
+                          style={{
+                            fontSize: 13,
+                            padding: '4px 6px',
+                            borderRadius: 4,
+                            border: `1px solid ${isDark ? '#444' : '#ccc'}`,
+                            width: 100,
+                          }}
+                        />
+                        <button
+                          type='button'
+                          onClick={addGenero}
+                          style={{
+                            padding: '4px 6px',
+                            borderRadius: 4,
+                            border: '1px solid #888',
+                            cursor: 'pointer',
+                            fontSize: 12,
+                          }}>
+                          +
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
 
                 <MyInput
                   label='Idioma'

@@ -5,27 +5,26 @@ import MyButton from '../../components/Button'
 import { MagnifyingGlassIcon } from '@radix-ui/react-icons'
 import MovieList from '../../components/MovieList'
 import MovieModal from '../../components/MovieModal'
-import { getMovies } from '../../services/movies.service'
+import { movieStore } from '../../services/movie.store'
 import type { Movie } from '../../types/movie'
+import FilterModal from '../../components/FilterModal'
 
 export default function Filmes() {
   const [search, setSearch] = useState('')
   const [movies, setMovies] = useState<Movie[]>([])
   const [modalOpen, setModalOpen] = useState(false)
+  const [filtersOpen, setFiltersOpen] = useState(false) // <-- adicionado
   const [token] = useState(localStorage.getItem('token') || '')
 
-  // carregar filmes
   useEffect(() => {
-    async function fetchMovies() {
-      const data = await getMovies({ search, take: 50, skip: 0 })
-      setMovies(data)
-    }
-    fetchMovies()
-  }, [search])
+    const sub = movieStore.movies$.subscribe(setMovies)
+    movieStore.fetchMovies()
+    return () => sub.unsubscribe()
+  }, [])
 
-  function handleOpenFilters() {
-    console.log('Abrir modal de filtros')
-  }
+  useEffect(() => {
+    movieStore.setFilters({ search })
+  }, [search])
 
   function handleAddMovie() {
     setModalOpen(true)
@@ -38,33 +37,33 @@ export default function Filmes() {
           style={{ maxWidth: '300px' }}
           placeholder='Pesquisar filmes...'
           value={search}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearch(e.target.value)}
+          onChange={(e) => setSearch(e.target.value)}
           icon={<MagnifyingGlassIcon />}
         />
 
-        <Flex gap='2' ml='4' style={{ padding: '0 36px'}}>
-          <MyButton variant='secondary' onClick={handleOpenFilters}>
+        <Flex gap='2' ml='4' style={{ padding: '0 36px' }}>
+          <MyButton variant='secondary' onClick={() => setFiltersOpen(true)}>
             Filtros
           </MyButton>
+
+          <FilterModal
+            isOpen={filtersOpen}
+            onClose={() => setFiltersOpen(false)}
+          />
+
           <MyButton variant='primary' onClick={handleAddMovie}>
             Adicionar Filme
           </MyButton>
         </Flex>
       </Flex>
 
-      {/* Lista de filmes */}
       <MovieList movies={movies} perPage={6} />
 
-      {/* Modal de adicionar/editar filme */}
       <MovieModal
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
         token={token}
-        onSaved={() => {
-          setModalOpen(false)
-          // Recarrega filmes após salvar
-          getMovies({ search, take: 50, skip: 0 }).then(setMovies)
-        }}
+        onSaved={() => setModalOpen(false)}
       />
     </Flex>
   )
