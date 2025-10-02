@@ -78,7 +78,7 @@ export default function MovieDetail() {
           <Flex gap='3' style={{ marginTop: '24px' }}>
             <Button
               disabled={!isOwner}
-              onClick={() => alert('Editar')}
+              onClick={() => setEditOpen(true)}
               style={{ background: '#9333ea' }}>
               Editar
             </Button>
@@ -252,7 +252,7 @@ export default function MovieDetail() {
         </div>
       )}
 
-       {/* Modal de edição */}
+      {/* Modal de edição */}
       <MovieModal
         isOpen={editOpen}
         onClose={() => setEditOpen(false)}

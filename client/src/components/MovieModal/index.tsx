@@ -109,7 +109,7 @@ export default function MovieModal({
           style={{
             background: isDark ? 'black' : 'white',
             padding: '0 24px ',
-            height: '90vh',
+            height: '100vh',
             width: '40%',
             position: 'fixed',
             top: 0,
@@ -149,7 +149,7 @@ export default function MovieModal({
           <div
             style={{
               flex: 1,
-              height: 'calc(100% - 25px)',
+              height: 'calc(100% - 130px)',
               overflowY: 'auto',
               marginTop: 16,
             }}>
