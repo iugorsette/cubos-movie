@@ -5,7 +5,7 @@ import MyInput from '../Input'
 import MyButton from '../Button'
 import { createMovie, updateMovie } from '../../services/movies.service'
 import { useTheme } from '../../context/useTheme'
-import { Cross2Icon } from '@radix-ui/react-icons'
+import { Cross2Icon, PlusIcon } from '@radix-ui/react-icons'
 import type { MovieFormData } from '../../types/movie'
 
 type MovieModalProps = {
@@ -275,10 +275,10 @@ export default function MovieModal({
                         style={{
                           display: 'flex',
                           alignItems: 'center',
-                          backgroundColor: isDark ? '#333' : '#eee',
-                          padding: '4px 8px',
-                          borderRadius: 16,
-                          fontSize: 13,
+                          backgroundColor: isDark ? '#8457AA' : '#8E4EC6',
+                          color:'#eee',
+                          padding: '4px 12px',
+                          fontSize: 15,
                         }}>
                         {g}
                         <button
@@ -303,31 +303,17 @@ export default function MovieModal({
                           gap: 4,
                           alignItems: 'center',
                         }}>
-                        <input
+                        <MyInput
                           type='text'
                           value={newGenero}
                           onChange={(e) => setNewGenero(e.target.value)}
                           placeholder='Novo gênero'
-                          style={{
-                            fontSize: 13,
-                            padding: '4px 6px',
-                            borderRadius: 4,
-                            border: `1px solid ${isDark ? '#444' : '#ccc'}`,
-                            width: 100,
-                          }}
                         />
-                        <button
+                        <MyButton
                           type='button'
-                          onClick={addGenero}
-                          style={{
-                            padding: '4px 6px',
-                            borderRadius: 4,
-                            border: '1px solid #888',
-                            cursor: 'pointer',
-                            fontSize: 12,
-                          }}>
-                          +
-                        </button>
+                          iconButton
+                          icon={<PlusIcon />}
+                          onClick={addGenero}></MyButton>
                       </div>
                     )}
                   </div>

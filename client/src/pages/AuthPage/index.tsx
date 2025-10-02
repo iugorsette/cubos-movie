@@ -44,7 +44,7 @@ export default function AuthPage() {
 
         console.log('loginService return', data)
         loginContext(data.user, data.token)
-        navigate('/filmes') // redireciona após login
+        navigate('/filmes')
       }
 
       if (mode === 'register') {

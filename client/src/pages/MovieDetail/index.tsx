@@ -29,8 +29,8 @@ export default function MovieDetail() {
 
   const bgOverlay = isDark ? 'rgba(0,0,0,0.7)' : 'rgba(255,255,255,0.6)'
   const textColor = isDark ? '#fff' : '#111'
-  const cardBg = isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)'
-  const genreBg = isDark ? '#5b21b6' : '#2563eb'
+  const cardBg = isDark ? 'rgba(35, 34, 37, 0.75)' : 'rgba(0,0,0,0.05)'
+  const genreBg = isDark ? '#8457AA' : '#8E4EC6'
 
   return (
     <div
@@ -126,17 +126,24 @@ export default function MovieDetail() {
               {/* Gêneros */}
               <strong>Gêneros :</strong> <br />
               {movie.generos?.length > 0 && (
-                <div style={{ marginBottom: '16px' }}>
+                <div
+                  style={{
+                    marginBottom: '16px',
+                    display: 'flex', 
+                    flexWrap: 'wrap',
+                    gap: '8px',
+                  }}>
                   {movie.generos.map((genero) => (
                     <span
                       key={genero}
                       style={{
                         background: genreBg,
-                        padding: '6px 12px',
-                        borderRadius: '6px',
+                        padding: '8px 18px',
                         marginRight: '8px',
                         fontSize: '0.85rem',
+                        fontWeight: 'bold',
                         color: '#fff',
+                        whiteSpace: 'nowrap',
                       }}>
                       {genero}
                     </span>
@@ -161,35 +168,11 @@ export default function MovieDetail() {
                 alignItems: 'center',
               }}>
               <Info
-                label='Popularidade'
+                label='POPULARIDADE'
                 value={movie.popularidade?.toString()}
                 bg={cardBg}
               />
               <Info label='Votos' value={movie.votos?.toString()} bg={cardBg} />
-              <Info
-                label='Lançamento'
-                value={movie.dataLancamento}
-                bg={cardBg}
-              />
-              <Info label='Duração' value={movie.duracao} bg={cardBg} />
-              <Info label='Idioma' value={movie.idioma} bg={cardBg} />
-              <Info
-                label='Orçamento'
-                value={movie.orcamento ? `US$ ${movie.orcamento}` : '-'}
-                bg={cardBg}
-              />
-              <Info
-                label='Receita'
-                value={movie.receita ? `US$ ${movie.receita}` : '-'}
-                bg={cardBg}
-              />
-              <Info
-                label='Lucro'
-                value={movie.lucro ? `US$ ${movie.lucro}` : '-'}
-                bg={cardBg}
-              />
-
-              {/* Rating circular */}
               {movie.popularidade && (
                 <div
                   style={{
@@ -219,6 +202,32 @@ export default function MovieDetail() {
                   </span>
                 </div>
               )}
+              <Info
+                label='LANÇAMENTO'
+                value={movie.dataLancamento}
+                bg={cardBg}
+              />
+              
+              <Info label='DURAÇÃO' value={movie.duracao} bg={cardBg} />
+              <Info label='IDIOMA' value={movie.idioma} bg={cardBg} />
+              <Info
+                label='ORÇAMENTO'
+                value={movie.orcamento ? `US$ ${movie.orcamento}` : '-'}
+                bg={cardBg}
+              />
+              <Info
+                label='RECEITA'
+                value={movie.receita ? `US$ ${movie.receita}` : '-'}
+                bg={cardBg}
+              />
+              <Info
+                label='LUCRO'
+                value={movie.lucro ? `US$ ${movie.lucro}` : '-'}
+                bg={cardBg}
+              />
+
+              {/* Rating circular */}
+              
             </div>
             <Flex gap='5'></Flex>
           </Flex>
@@ -277,10 +286,14 @@ function Info({
       style={{
         background: bg,
         padding: '12px',
-        borderRadius: '6px',
+        borderRadius: '4px',
         fontSize: '0.9rem',
       }}>
-      <strong>{label}:</strong> <br />
+      <strong
+        style={{
+          color: '#B5B2BC' 
+        }}
+      >{label}</strong> <br />
       <span>{value || '-'}</span>
     </div>
   )
