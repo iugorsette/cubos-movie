@@ -10,7 +10,7 @@ import { useAuth } from '../../context/useAuth'
 export default function MovieDetail() {
   const { id } = useParams()
   const navigate = useNavigate()
-  const { isDark } = useTheme() // 'dark' | 'light'
+  const { isDark } = useTheme()
   const { user, token } = useAuth()
   const [movie, setMovie] = useState<Movie | null>(null)
   const [editOpen, setEditOpen] = useState(false)
@@ -40,7 +40,6 @@ export default function MovieDetail() {
         background: isDark ? '#0f0f0f' : '#f9fafb',
         color: textColor,
       }}>
-      {/* Header com poster + informações */}
       <div
         style={{
           backgroundImage: `url(${movie.capaFundo})`,
@@ -300,7 +299,7 @@ function getEmbedUrl(url: string): string {
       const videoId = urlObj.pathname.slice(1)
       return `https://www.youtube.com/embed/${videoId}`
     }
-    return url // fallback
+    return url
   } catch {
     return url
   }

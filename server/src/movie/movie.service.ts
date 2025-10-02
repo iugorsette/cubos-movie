@@ -90,11 +90,36 @@ export class MovieService {
 
   async update(
     id: string,
-    updateMovieDto: UpdateMovieDto,
+    updateMovieDto: Partial<UpdateMovieDto>,
     capaFile?: Express.Multer.File,
     capaFundoFile?: Express.Multer.File,
   ) {
-    const data: any = { ...updateMovieDto };
+    const numericFields = [
+      'popularidade',
+      'votos',
+      'orcamento',
+      'receita',
+      'lucro',
+    ];
+
+    const data: any = Object.entries(updateMovieDto).reduce(
+      (acc, [key, value]) => {
+        if (value === undefined || value === null) return acc;
+
+        if (['id', 'createdBy', 'createdAt', 'user'].includes(key)) return acc;
+
+        if (numericFields.includes(key)) {
+          acc[key] = Number(value);
+        } else if (key === 'dataLancamento') {
+          acc[key] = new Date(value as string);
+        } else {
+          acc[key] = value;
+        }
+
+        return acc;
+      },
+      {} as any,
+    );
 
     if (capaFile) data.capaUrl = await this.uploadToGCS(capaFile);
     if (capaFundoFile) data.capaFundo = await this.uploadToGCS(capaFundoFile);

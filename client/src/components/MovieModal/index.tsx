@@ -47,12 +47,20 @@ export default function MovieModal({
   const [capaFundoFile, setCapaFundoFile] = useState<File | undefined>()
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
-  const [capaPreview, setCapaPreview] = useState<string | null>(null)
-  const [capaFundoPreview, setCapaFundoPreview] = useState<string | null>(null)
+  const [capaPreview, setCapaPreview] = useState<string | null>(
+    initialData?.capaUrl || null
+  )
+  const [capaFundoPreview, setCapaFundoPreview] = useState<string | null>(
+    initialData?.capaFundo || null
+  )
   const formRef = useRef<HTMLFormElement>(null)
 
   useEffect(() => {
-    if (initialData) setForm(initialData)
+    if (initialData) {
+      setForm(initialData)
+      setCapaPreview(initialData.capaUrl || null)
+      setCapaFundoPreview(initialData.capaFundo || null)
+    }
   }, [initialData])
 
   function handleChange<K extends keyof MovieFormData>(
@@ -321,8 +329,7 @@ export default function MovieModal({
             <MyButton
               type='button'
               disabled={loading}
-              onClick={() => formRef.current?.requestSubmit()}
-            >
+              onClick={() => formRef.current?.requestSubmit()}>
               {initialData?.id ? 'Salvar' : 'Adicionar'}
             </MyButton>
           </Flex>
