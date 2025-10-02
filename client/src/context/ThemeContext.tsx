@@ -1,4 +1,4 @@
-import { createContext, useState, type ReactNode } from "react"
+import { createContext, useState, type ReactNode, useEffect } from 'react'
 
 export type ThemeContextType = {
   isDark: boolean
@@ -8,8 +8,19 @@ export type ThemeContextType = {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [isDark, setIsDark] = useState(false)
-  const toggleTheme = () => setIsDark(prev => !prev)
+  const [isDark, setIsDark] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem('isDark')
+      return stored === 'true'
+    }
+    return false
+  })
+
+  useEffect(() => {
+    localStorage.setItem('isDark', String(isDark))
+  }, [isDark])
+
+  const toggleTheme = () => setIsDark((prev) => !prev)
 
   return (
     <ThemeContext.Provider value={{ isDark, toggleTheme }}>
