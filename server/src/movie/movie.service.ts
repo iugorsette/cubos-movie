@@ -18,7 +18,6 @@ export class MovieService {
     this.bucketName = process.env.GCP_BUCKET_NAME!;
   }
 
-  // Upload de arquivo para Google Cloud Storage
   private async uploadToGCS(file: Express.Multer.File): Promise<string> {
     if (!file) throw new BadRequestException('Arquivo não enviado');
 
@@ -43,7 +42,6 @@ export class MovieService {
     });
   }
 
-  // Criação de filme
   async create(
     createMovieDto: CreateMovieDto,
     userId: string,
@@ -69,17 +67,27 @@ export class MovieService {
 
     return this.prisma.filme.create({
       data: {
-        ...createMovieDto,
+        titulo: createMovieDto.titulo,
+        tituloOriginal: createMovieDto.tituloOriginal,
+        sinopse: createMovieDto.sinopse,
         dataLancamento,
+        duracao: createMovieDto.duracao,
+        generos: createMovieDto.generos,
+        idioma: createMovieDto.idioma,
+        popularidade: Number(createMovieDto.popularidade) || 0,
+        votos: Number(createMovieDto.votos) || 0,
+        orcamento: Number(createMovieDto.orcamento) || 0,
+        receita: Number(createMovieDto.receita) || 0,
+        lucro: Number(createMovieDto.lucro) || 0,
         capaUrl,
         capaFundo,
-        user: { connect: { id: userId } }, // conecta usuário existente
+        trailerUrl: createMovieDto.trailerUrl,
+        user: { connect: { id: userId } },
       },
       include: { user: true },
     });
   }
 
-  // Atualização de filme
   async update(
     id: string,
     updateMovieDto: UpdateMovieDto,
@@ -97,7 +105,6 @@ export class MovieService {
     });
   }
 
-  // Listagem de filmes com filtros
   findAll(params: {
     skip?: number;
     take?: number;
@@ -135,7 +142,6 @@ export class MovieService {
     });
   }
 
-  // Buscar filme por ID
   findOne(id: string) {
     return this.prisma.filme.findUnique({
       where: { id },
@@ -143,7 +149,6 @@ export class MovieService {
     });
   }
 
-  // Remover filme
   remove(id: string) {
     return this.prisma.filme.delete({ where: { id } });
   }

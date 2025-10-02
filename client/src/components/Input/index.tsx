@@ -7,8 +7,17 @@ export type MyInputProps = InputHTMLAttributes<HTMLInputElement> & {
   showLabel?: boolean
   error?: string | null
   icon?: ReactNode
-  type?: 'text' | 'number' | 'date' | 'file' | 'currency' | 'url'
+  type?:
+    | 'text'
+    | 'number'
+    | 'date'
+    | 'file'
+    | 'currency'
+    | 'url'
+    | 'email'
+    | 'textarea'
   onFileChange?: (file: File | undefined) => void
+  width?: string | number
 }
 
 const MyInput = forwardRef<HTMLInputElement, MyInputProps>(
@@ -21,6 +30,7 @@ const MyInput = forwardRef<HTMLInputElement, MyInputProps>(
       error = null,
       icon,
       onFileChange,
+      width,
       ...rest
     },
     ref
@@ -41,7 +51,7 @@ const MyInput = forwardRef<HTMLInputElement, MyInputProps>(
           display: 'flex',
           flexDirection: 'column',
           gap: 6,
-          width: '100%',
+          width: width ?? '100%',
         }}>
         {label && showLabel && (
           <span
@@ -54,7 +64,7 @@ const MyInput = forwardRef<HTMLInputElement, MyInputProps>(
           </span>
         )}
 
-         <div style={{ position: 'relative', width: '100%' }}>
+        <div style={{ position: 'relative', width: '100%' }}>
           <input
             ref={ref}
             type={type}
@@ -101,8 +111,7 @@ const MyInput = forwardRef<HTMLInputElement, MyInputProps>(
                 pointerEvents: 'none',
                 display: 'flex',
                 alignItems: 'center',
-              }}
-            >
+              }}>
               {icon}
             </span>
           )}
