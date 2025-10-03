@@ -6,25 +6,17 @@ import { MagnifyingGlassIcon } from '@radix-ui/react-icons'
 import MovieList from '../../components/MovieList'
 import MovieModal from '../../components/MovieModal'
 import { movieStore } from '../../services/movie.store'
-import type { Movie } from '../../types/movie'
 import FilterModal from '../../components/FilterModal'
 
 export default function Filmes() {
   const [search, setSearch] = useState('')
-  const [movies, setMovies] = useState<Movie[]>([])
   const [modalOpen, setModalOpen] = useState(false)
-  const [filtersOpen, setFiltersOpen] = useState(false) // <-- adicionado
+  const [filtersOpen, setFiltersOpen] = useState(false)
   const [token] = useState(localStorage.getItem('token') || '')
 
   useEffect(() => {
-    const sub = movieStore.movies$.subscribe(setMovies)
     movieStore.fetchMovies()
-    return () => sub.unsubscribe()
   }, [])
-
-  useEffect(() => {
-    movieStore.setFilters({ search })
-  }, [search])
 
   function handleAddMovie() {
     setModalOpen(true)
@@ -46,10 +38,13 @@ export default function Filmes() {
             Filtros
           </MyButton>
 
-          <FilterModal
-            isOpen={filtersOpen}
-            onClose={() => setFiltersOpen(false)}
-          />
+          {/* Renderiza o modal apenas se aberto */}
+          {filtersOpen && (
+            <FilterModal
+              isOpen={filtersOpen}
+              onClose={() => setFiltersOpen(false)}
+            />
+          )}
 
           <MyButton colorVariant='primary' onClick={handleAddMovie}>
             Adicionar Filme
@@ -57,7 +52,7 @@ export default function Filmes() {
         </Flex>
       </Flex>
 
-      <MovieList movies={movies} perPage={14} />
+      <MovieList/>
 
       <MovieModal
         isOpen={modalOpen}

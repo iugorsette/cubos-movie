@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { Flex, Button, Text } from '@radix-ui/themes'
-import { getMovieById } from '../../services/movies.service'
+import { Flex, Text } from '@radix-ui/themes'
+import { deleteMovie, getMovieById } from '../../services/movies.service'
 import type { Movie } from '../../types/movie'
 import { useTheme } from '../../context/useTheme'
 import MovieModal from '../../components/MovieModal'
@@ -11,6 +11,7 @@ import TrailerFrame from '../../components/TrailerFrame'
 import GenerosChips from '../../components/GenerosChips'
 import Info from '../../components/Info'
 import MyButton from '../../components/Button'
+import { ConfirmDeleteModal } from '../../components/ConfirmDeleteModal'
 
 export default function MovieDetail() {
   const { id } = useParams()
@@ -19,7 +20,18 @@ export default function MovieDetail() {
   const { user, token } = useAuth()
   const [movie, setMovie] = useState<Movie | null>(null)
   const [editOpen, setEditOpen] = useState(false)
+  const [deleteOpen, setDeleteOpen] = useState(false)
 
+  const handleDelete = async () => {
+    if (!id || !token) return
+    try {
+      await deleteMovie(id, token)
+      navigate('/') // volta para home ou lista
+    } catch (err) {
+      console.error('Erro ao deletar filme:', err)
+      alert('Não foi possível deletar o filme.')
+    }
+  }
   const isOwner = user?.id === movie?.createdBy
 
   useEffect(() => {
@@ -82,7 +94,7 @@ export default function MovieDetail() {
             <MyButton
               colorVariant='secondary'
               disabled={!isOwner}
-              onClick={() => alert('Deletar')}>
+              onClick={() => setDeleteOpen(true)}>
               Deletar
             </MyButton>
             <MyButton disabled={!isOwner} onClick={() => setEditOpen(true)}>
@@ -93,7 +105,12 @@ export default function MovieDetail() {
             </MyButton>
           </Flex>
         </Flex>
-
+        <ConfirmDeleteModal
+          isOpen={deleteOpen}
+          onClose={() => setDeleteOpen(false)}
+          onConfirm={handleDelete}
+          movieTitle={movie.titulo}
+        />
         <Flex
           gap='5'
           wrap='wrap'

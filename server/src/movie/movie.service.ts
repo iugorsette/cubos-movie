@@ -56,6 +56,7 @@ export class MovieService {
       'Animação',
       'Documentário',
     ];
+
     const classificacoes = [
       'LIVRE',
       'DEZ',
@@ -63,6 +64,36 @@ export class MovieService {
       'CATORZE',
       'DEZESSEIS',
       'DEZOITO',
+    ];
+
+    const idiomas = ['Português', 'Inglês', 'Espanhol', 'Francês', 'Alemão'];
+
+    const palavrasTitulos = [
+      'Sombras',
+      'Destino',
+      'Caminho',
+      'Guerra',
+      'Amor',
+      'Noite',
+      'Segredo',
+      'Guardião',
+      'Futuro',
+      'Herança',
+      'Esperança',
+      'Cidade',
+    ];
+
+    const adjetivos = [
+      'Perdido',
+      'Final',
+      'Oculto',
+      'Proibido',
+      'Eterno',
+      'Invisível',
+      'Mortal',
+      'Secreto',
+      'Último',
+      'Sombrio',
     ];
 
     const randomInt = (min: number, max: number) =>
@@ -74,35 +105,53 @@ export class MovieService {
     const orcamento = randomInt(1_000_000, 200_000_000);
     const receita = randomInt(orcamento, orcamento * 5);
 
+    const titulo = `${randomElement(palavrasTitulos)} ${randomElement(adjetivos)}`;
+
+    const protagonista = randomElement([
+      'um jovem herói',
+      'uma cientista brilhante',
+      'um detetive experiente',
+      'uma família comum',
+      'um guerreiro lendário',
+    ]);
+    const conflito = randomElement([
+      'um inimigo poderoso',
+      'um segredo obscuro',
+      'o fim do mundo',
+      'um mistério antigo',
+      'um amor proibido',
+    ]);
+    const cenario = randomElement([
+      'a tecnologia domina tudo',
+      'a magia foi esquecida',
+      'os humanos vivem no espaço',
+      'os deuses caminham entre os mortais',
+      'o futuro é incerto',
+    ]);
+
     return {
-      titulo: `Filme ${randomInt(1, 1000)}`,
-      tituloOriginal: `Original ${randomInt(1, 1000)}`,
-      subtitulo: `Uma frase épica ${randomInt(1, 100)}`,
-      sinopse: `Sinopse do filme ${randomInt(1, 1000)} descrevendo a história principal.`,
+      titulo,
+      tituloOriginal: titulo,
+      subtitulo: `Uma história sobre ${randomElement(['coragem', 'esperança', 'traição', 'redenção', 'aventura'])}`,
+      sinopse: `Em um mundo onde ${cenario}, ${protagonista} precisa enfrentar ${conflito} para mudar o destino.`,
       dataLancamento: new Date(
         randomInt(1980, 2025),
         randomInt(0, 11),
         randomInt(1, 28),
       ),
       duracao: randomInt(80, 180),
-      generos: Array.from({ length: randomInt(1, 3) }, () =>
+      generos: Array.from({ length: randomInt(1, 2) }, () =>
         randomElement(generos),
       ),
       popularidade: randomInt(0, 1000),
       votos: randomInt(0, 5000),
-      idioma: randomElement([
-        'Português',
-        'Inglês',
-        'Espanhol',
-        'Francês',
-        'Alemão',
-      ]),
+      idioma: randomElement(idiomas),
       orcamento,
       receita,
       lucro: receita - orcamento,
       capaUrl: `https://picsum.photos/200/300?random=${randomInt(1, 1000)}`,
       capaFundo: `https://picsum.photos/400/200?random=${randomInt(1, 1000)}`,
-      trailerUrl: `https://www.youtube.com/watch?v=dQw4w9WgXcQ`,
+      trailerUrl: `https://youtu.be/ZiDphkXCZsQ`,
       classificacaoIndicativa: randomElement(classificacoes),
       createdBy: userId,
     };
@@ -297,7 +346,6 @@ export class MovieService {
         : undefined,
     ];
 
-    // Remove undefined e force o tipo como FilmeWhereInput[]
     return {
       AND: conditions.filter(Boolean) as Prisma.FilmeWhereInput[],
     };

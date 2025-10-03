@@ -17,6 +17,7 @@ import Slider from 'rc-slider'
 import 'rc-slider/assets/index.css'
 import { useSearchParams } from 'react-router-dom'
 import './index.css'
+import type { ClassificacaoIndicativa } from '../../types/movie'
 type FilterModalProps = {
   isOpen: boolean
   onClose: () => void
@@ -32,62 +33,68 @@ const classificacoesIndicativas = [
 
 export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
   const { isDark } = useTheme()
-  const [searchParams, setSearchParams] = useSearchParams()
-
-  const [classificacoes, setClassificacoes] = useState<string[]>([])
+  const [classificacoes, setClassificacoes] = useState<
+    ClassificacaoIndicativa[]
+  >([])
   const [sortBy, setSortBy] = useState<
     'titulo' | 'dataLancamento' | 'popularidade'
   >('titulo')
   const [order, setOrder] = useState<'asc' | 'desc'>('asc')
-  const [duration, setDuration] = useState<{ min: number; max: number }>({
-    min: 0,
-    max: 300,
-  })
-  const [dateRange, setDateRange] = useState<{ start: string; end: string }>({
-    start: '',
-    end: '',
-  })
+  const [duration, setDuration] = useState({ min: 0, max: 300 })
+  const [dateRange, setDateRange] = useState({ start: '', end: '' })
+  const [searchParams, setSearchParams] = useSearchParams()
 
-  function toggleClassificacao(value: string) {
+  function toggleClassificacao(value: ClassificacaoIndicativa) {
     setClassificacoes((prev) =>
       prev.includes(value) ? prev.filter((c) => c !== value) : [...prev, value]
     )
   }
-  const DEFAULT_TAKE = 14
-
   useEffect(() => {
-    const minDuration = searchParams.get('minDuration')
-    const maxDuration = searchParams.get('maxDuration')
-    const startDate = searchParams.get('startDate')
-    const endDate = searchParams.get('endDate')
-    const sortByParam = searchParams.get('sortBy') as
-      | 'titulo'
-      | 'dataLancamento'
-      | 'popularidade'
-    const orderParam = searchParams.get('order') as 'asc' | 'desc'
+    if (isOpen) {
+      const params = Object.fromEntries([...searchParams])
 
-    if (minDuration && maxDuration) {
-      setDuration({ min: Number(minDuration), max: Number(maxDuration) })
+      setSortBy((params.sortBy as any) || 'titulo')
+      setOrder((params.order as any) || 'asc')
+      setDuration({
+        min: params.minDuration ? Number(params.minDuration) : 0,
+        max: params.maxDuration ? Number(params.maxDuration) : 300,
+      })
+      setDateRange({
+        start: params.startDate || '',
+        end: params.endDate || '',
+      })
+      setClassificacoes(
+        params.classificacoesIndicativas
+          ? Array.isArray(params.classificacoesIndicativas)
+            ? params.classificacoesIndicativas.map(
+                (v: string) => v as ClassificacaoIndicativa
+              )
+            : String(params.classificacoesIndicativas)
+                .split(',')
+                .map((v) => v as ClassificacaoIndicativa)
+          : []
+      )
     }
-
-    if (startDate && endDate) {
-      setDateRange({ start: startDate, end: endDate })
-    }
-
-    if (sortByParam) setSortBy(sortByParam)
-    if (orderParam) setOrder(orderParam)
-
+  }, [isOpen])
+  function resetFilters() {
+    setSortBy('titulo')
+    setOrder('asc')
+    setDuration({ min: 0, max: 300 })
+    setDateRange({ start: '', end: '' })
+    setClassificacoes([])
     movieStore.setFilters({
-      sortBy: sortByParam || 'titulo',
-      order: orderParam || 'asc',
+      sortBy: 'titulo',
+      order: 'asc',
       skip: 0,
+      classificacoesIndicativas: [],
       take: DEFAULT_TAKE,
-      minDuration: minDuration ? Number(minDuration) : 0,
-      maxDuration: maxDuration ? Number(maxDuration) : 300,
-      startDate: startDate || '',
-      endDate: endDate || '',
+      startDate: undefined,
+      endDate: undefined,
     })
-  }, [])
+    setSearchParams({})
+    onClose()
+  }
+  const DEFAULT_TAKE = 14
 
   function applyFilters() {
     const filters = {
@@ -95,16 +102,28 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
       order,
       skip: 0,
       take: DEFAULT_TAKE,
-      classificacoesIndicativas: classificacoes.join(','),
-      minDuration: duration.min.toString(),
-      maxDuration: duration.max.toString(),
+      classificacoesIndicativas: classificacoes,
+      minDuration: duration.min,
+      maxDuration: duration.max,
       startDate: dateRange.start,
       endDate: dateRange.end,
     }
 
     movieStore.setFilters(filters)
-    setSearchParams(filters)
 
+    // Atualiza URL
+    const params: any = {
+      sortBy,
+      order,
+      minDuration: duration.min,
+      maxDuration: duration.max,
+      startDate: dateRange.start,
+      endDate: dateRange.end,
+    }
+    if (classificacoes.length > 0)
+      params.classificacoesIndicativas = classificacoes.join(',')
+
+    setSearchParams(params)
     onClose()
   }
 
@@ -395,28 +414,7 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
               gap: 8,
             }}
             mt='3'>
-            <MyButton
-              colorVariant='secondary'
-              onClick={() => {
-                setSortBy('titulo')
-                setOrder('asc')
-                setDuration({ min: 0, max: 300 })
-                setDateRange({ start: '', end: '' })
-                setClassificacoes([])
-                movieStore.setFilters({
-                  sortBy: 'titulo',
-                  order: 'asc',
-                  skip: 0,
-                  take: DEFAULT_TAKE,
-                  minDuration: 0,
-                  maxDuration: 300,
-                  startDate: '',
-                  endDate: '',
-                  classificacoesIndicativas: undefined,
-                })
-                setSearchParams({})
-                onClose()
-              }}>
+            <MyButton colorVariant='secondary' onClick={resetFilters}>
               Limpar filtros
             </MyButton>
             <Dialog.Close asChild>

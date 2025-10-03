@@ -31,7 +31,7 @@ class MovieStore {
   private filters: MovieFilters = { take: 5, skip: 0 }
 
   setFilters(filters: MovieFilters) {
-    this.filters = { ...this.filters, ...filters, skip: 0 } // reset page ao mudar filtro
+    this.filters = { ...this.filters, ...filters }
     this.fetchMovies()
   }
 
@@ -59,8 +59,12 @@ class MovieStore {
   }
 
   setPage(page: number) {
-    this.filters.skip = (page - 1) * (this.filters.take ?? 5)
+    this.filters.skip = (page - 1) * (this.filters.take ?? 14)
     this.fetchMovies()
+  }
+  
+  getFilters() {
+    return { ...this.filters }
   }
 }
 
