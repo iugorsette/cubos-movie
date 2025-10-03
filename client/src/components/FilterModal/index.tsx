@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import * as Dialog from '@radix-ui/react-dialog'
 import * as Select from '@radix-ui/react-select'
 import { Flex } from '@radix-ui/themes'
@@ -23,12 +23,12 @@ type FilterModalProps = {
 
 export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
   const { isDark } = useTheme()
+  const [searchParams, setSearchParams] = useSearchParams()
 
   const [sortBy, setSortBy] = useState<
     'titulo' | 'dataLancamento' | 'popularidade'
   >('titulo')
   const [order, setOrder] = useState<'asc' | 'desc'>('asc')
-
   const [duration, setDuration] = useState<{ min: number; max: number }>({
     min: 0,
     max: 300,
@@ -37,7 +37,42 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
     start: '',
     end: '',
   })
-  const [searchParams, setSearchParams] = useSearchParams()
+
+  // Inicializa filtros a partir da URL
+  useEffect(() => {
+    const minDuration = searchParams.get('minDuration')
+    const maxDuration = searchParams.get('maxDuration')
+    const startDate = searchParams.get('startDate')
+    const endDate = searchParams.get('endDate')
+    const sortByParam = searchParams.get('sortBy') as
+      | 'titulo'
+      | 'dataLancamento'
+      | 'popularidade'
+    const orderParam = searchParams.get('order') as 'asc' | 'desc'
+
+    if (minDuration && maxDuration) {
+      setDuration({ min: Number(minDuration), max: Number(maxDuration) })
+    }
+
+    if (startDate && endDate) {
+      setDateRange({ start: startDate, end: endDate })
+    }
+
+    if (sortByParam) setSortBy(sortByParam)
+    if (orderParam) setOrder(orderParam)
+
+    // Aplica filtros na primeira consulta
+    movieStore.setFilters({
+      sortBy: sortByParam || 'titulo',
+      order: orderParam || 'asc',
+      skip: 0,
+      take: 5,
+      minDuration: minDuration ? Number(minDuration) : 0,
+      maxDuration: maxDuration ? Number(maxDuration) : 300,
+      startDate: startDate || '',
+      endDate: endDate || '',
+    })
+  }, [])
 
   function applyFilters() {
     const filters = {
@@ -51,8 +86,8 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
       endDate: dateRange.end,
     }
 
+    // Atualiza a store e a URL
     movieStore.setFilters(filters)
-
     setSearchParams(filters)
 
     onClose()
@@ -68,7 +103,6 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
             inset: 0,
           }}
         />
-
         <Dialog.Content
           style={{
             backgroundColor: isDark
@@ -110,36 +144,32 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
             </Dialog.Close>
           </Flex>
           <Flex
-            direction='row'
-            wrap='wrap'
+            direction='column'
             style={{
               flex: 1,
               overflowY: 'auto',
-              gap: 16,
-              alignItems: 'flex-start', // alinha os itens ao topo
+              gap: 24,
             }}>
             {/* Duração */}
-            <div style={{ width: '100%' }}>
-              <strong>Duração (minutos):</strong>
-              <div style={{ margin: '12px ' }}>
-                <Slider
-                  range
-                  min={0}
-                  max={300}
-                  step={10}
-                  value={[duration.min, duration.max]}
-                  onChange={(val) =>
-                    setDuration({
-                      min: val[0] as number,
-                      max: val[1] as number,
-                    })
-                  }
-                />
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <div style={{ width: '90%' }}>
+              <strong style={{ display: 'block', marginBottom: 8 }}>
+                Duração (minutos):
+              </strong>
+              <Slider
+                style={{ margin: '12px' }}
+                range
+                min={0}
+                max={300}
+                step={10}
+                value={[duration.min, duration.max]}
+                onChange={(val) =>
+                  setDuration({ min: val[0] as number, max: val[1] as number })
+                }
+              />
+              <Flex justify='between' style={{ marginTop: 8 }}>
                 <span>{duration.min} min</span>
                 <span>{duration.max} min</span>
-              </div>
+              </Flex>
             </div>
 
             {/* Data de lançamento */}
@@ -169,8 +199,6 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
               </Flex>
             </div>
 
-            {/* Filtro extra */}
-
             {/* Ordenar por */}
             <div
               style={{
@@ -180,6 +208,7 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
                 width: '100%',
               }}>
               <strong style={{ width: '100%' }}>Ordenar por:</strong>
+
               <Select.Root
                 value={sortBy}
                 onValueChange={(val) => setSortBy(val as any)}>
@@ -291,7 +320,34 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
           </Flex>
 
           {/* Footer */}
-          <Flex justify='end' gap='2' mt='3'>
+          <Flex
+            justify='end'
+            style={{
+              gap: 8,
+            }}
+            mt='3'>
+            <MyButton
+              variant='secondary'
+              onClick={() => {
+                setSortBy('titulo')
+                setOrder('asc')
+                setDuration({ min: 0, max: 300 })
+                setDateRange({ start: '', end: '' })
+                movieStore.setFilters({
+                  sortBy: 'titulo',
+                  order: 'asc',
+                  skip: 0,
+                  take: 5,
+                  minDuration: 0,
+                  maxDuration: 300,
+                  startDate: '',
+                  endDate: '',
+                })
+                setSearchParams({})
+                onClose()
+              }}>
+              Limpar filtros
+            </MyButton>
             <Dialog.Close asChild>
               <MyButton variant='secondary'>Cancelar</MyButton>
             </Dialog.Close>
