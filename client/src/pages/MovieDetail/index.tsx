@@ -6,6 +6,9 @@ import type { Movie } from '../../types/movie'
 import { useTheme } from '../../context/useTheme'
 import MovieModal from '../../components/MovieModal'
 import { useAuth } from '../../context/useAuth'
+import PopularidadeRatio from '../../components/PopularidadeRatio'
+import TrailerFrame from '../../components/TrailerFrame'
+import GenerosChips from '../../components/GenerosChips'
 
 export default function MovieDetail() {
   const { id } = useParams()
@@ -30,7 +33,6 @@ export default function MovieDetail() {
   const bgOverlay = isDark ? 'rgba(0,0,0,0.7)' : 'rgba(255,255,255,0.6)'
   const textColor = isDark ? '#fff' : '#111'
   const cardBg = isDark ? 'rgba(35, 34, 37, 0.75)' : 'rgba(0,0,0,0.05)'
-  const genreBg = isDark ? '#8457AA' : '#8E4EC6'
 
   return (
     <div
@@ -103,7 +105,7 @@ export default function MovieDetail() {
             style={{
               position: 'relative',
               zIndex: 1,
-              width: '50%',
+              width: '30%',
             }}>
             <div style={{ position: 'relative' }}>
               {movie.capaUrl && (
@@ -118,40 +120,20 @@ export default function MovieDetail() {
                 />
               )}
             </div>
-
-            {/* Detalhes */}
-            <div style={{ flex: 1 }}>
-              {/* Sinopse */}
+          </Flex>
+          <Flex
+            direction='column'
+            gap='2'
+            style={{
+              justifyContent: 'space-between',
+              zIndex: 1,
+              width: '50%',
+            }}>
+            <Flex direction='column' gap='8'>
+              <Text size='5'> Frase de impacto</Text>
               <Info label='Sinopse' value={movie.sinopse} bg={cardBg} />
-              {/* Gêneros */}
-              <strong>Gêneros :</strong> <br />
-              {movie.generos?.length > 0 && (
-                <div
-                  style={{
-                    marginBottom: '16px',
-                    display: 'flex', 
-                    flexWrap: 'wrap',
-                    gap: '8px',
-                  }}>
-                  {movie.generos.map((genero) => (
-                    <span
-                      key={genero}
-                      style={{
-                        background: genreBg,
-                        padding: '8px 18px',
-                        marginRight: '8px',
-                        fontSize: '0.85rem',
-                        fontWeight: 'bold',
-                        color: '#fff',
-                        whiteSpace: 'nowrap',
-                      }}>
-                      {genero}
-                    </span>
-                  ))}
-                </div>
-              )}
-              {/* Grid de informações + rating */}
-            </div>
+            </Flex>
+            <GenerosChips generos={movie.generos} />
           </Flex>
           <Flex
             gap='5'
@@ -174,40 +156,15 @@ export default function MovieDetail() {
               />
               <Info label='Votos' value={movie.votos?.toString()} bg={cardBg} />
               {movie.popularidade && (
-                <div
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    flexDirection: 'column',
-                  }}>
-                  <div
-                    style={{
-                      width: '80px',
-                      height: '80px',
-                      borderRadius: '50%',
-                      background: `conic-gradient(#facc15 ${
-                        movie.popularidade % 100
-                      }%, #e5e7eb ${movie.popularidade % 100}%)`,
-                      display: 'flex',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      fontWeight: 'bold',
-                      color: textColor,
-                    }}>
-                    {Math.round(movie.popularidade % 100)}%
-                  </div>
-                  <span style={{ marginTop: '8px', fontSize: '0.9rem' }}>
-                    Rating
-                  </span>
-                </div>
+                <PopularidadeRatio popularidade={movie.popularidade || 0} />
               )}
+
               <Info
                 label='LANÇAMENTO'
                 value={movie.dataLancamento}
                 bg={cardBg}
               />
-              
+
               <Info label='DURAÇÃO' value={movie.duracao} bg={cardBg} />
               <Info label='IDIOMA' value={movie.idioma} bg={cardBg} />
               <Info
@@ -225,42 +182,13 @@ export default function MovieDetail() {
                 value={movie.lucro ? `US$ ${movie.lucro}` : '-'}
                 bg={cardBg}
               />
-
-              {/* Rating circular */}
-              
             </div>
             <Flex gap='5'></Flex>
           </Flex>
         </Flex>
       </div>
+      {movie.trailerUrl && <TrailerFrame trailerUrl={movie.trailerUrl} />}
 
-      {movie.trailerUrl && (
-        <div style={{ padding: '20px 30px' }}>
-          <h2 style={{ marginBottom: '16px' }}>Trailer</h2>
-          <div
-            style={{
-              position: 'relative',
-              paddingBottom: '56.25%',
-              height: 0,
-            }}>
-            <iframe
-              src={getEmbedUrl(movie.trailerUrl)}
-              title='Trailer'
-              frameBorder='0'
-              allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'
-              allowFullScreen
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                width: '100%',
-                height: '65%',
-              }}></iframe>
-          </div>
-        </div>
-      )}
-
-      {/* Modal de edição */}
       <MovieModal
         isOpen={editOpen}
         onClose={() => setEditOpen(false)}
@@ -291,29 +219,12 @@ function Info({
       }}>
       <strong
         style={{
-          color: '#B5B2BC' 
-        }}
-      >{label}</strong> <br />
+          color: '#B5B2BC',
+        }}>
+        {label}
+      </strong>{' '}
+      <br />
       <span>{value || '-'}</span>
     </div>
   )
-}
-
-function getEmbedUrl(url: string): string {
-  try {
-    const urlObj = new URL(url)
-    if (urlObj.hostname.includes('youtube.com')) {
-      const videoId = urlObj.searchParams.get('v')
-      if (videoId) {
-        return `https://www.youtube.com/embed/${videoId}`
-      }
-    }
-    if (urlObj.hostname.includes('youtu.be')) {
-      const videoId = urlObj.pathname.slice(1)
-      return `https://www.youtube.com/embed/${videoId}`
-    }
-    return url
-  } catch {
-    return url
-  }
 }
