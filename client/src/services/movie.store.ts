@@ -1,20 +1,25 @@
 import { BehaviorSubject } from 'rxjs'
-import type { ClassificacaoIndicativa, Movie } from '../types/movie'
-import { getMovies } from './movies.service'
+import type { Movie } from '../types/movie'
+import {
+  createMovie,
+  deleteMovie,
+  getMovies,
+  updateMovie,
+} from './movies.service'
 
 type MovieFilters = {
   search?: string
+  generos?: string[]
+  classificacoes?: string[]
   minDuration?: number
   maxDuration?: number
   startDate?: string
-  classificacaoIndicativa?: ClassificacaoIndicativa
   endDate?: string
   sortBy?: 'titulo' | 'dataLancamento' | 'popularidade'
   order?: 'asc' | 'desc'
   skip?: number
   take?: number
 }
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000'
 
 class MovieStore {
   private moviesSubject = new BehaviorSubject<Movie[]>([])
@@ -23,48 +28,29 @@ class MovieStore {
   private filters: MovieFilters = { take: 5, skip: 0 }
 
   setFilters(filters: MovieFilters) {
-    this.filters = { ...this.filters, ...filters }
+    this.filters = { ...this.filters, ...filters, skip: 0 }
     this.fetchMovies()
   }
 
   async fetchMovies() {
     const data = await getMovies(this.filters)
-    this.moviesSubject.next(data)
+    this.moviesSubject.next(data.movies)
   }
 
   async addMovie(movie: Movie, token: string) {
-    const res = await fetch(`${API_URL}/movies`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(movie),
-    })
-    const newMovie = await res.json()
+    const res = await createMovie(movie, token)
     await this.fetchMovies()
-    return newMovie
+    return res
   }
 
-  async updateMovie(id: string, movie: Partial<Movie>, token: string) {
-    const res = await fetch(`${API_URL}/movies/${id}`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(movie),
-    })
-    const updated = await res.json()
+  async updateMovie(id: string, movie: Movie, token: string) {
+    const res = await updateMovie(id, movie, token)
     await this.fetchMovies()
-    return updated
+    return res
   }
 
   async deleteMovie(id: string, token: string) {
-    await fetch(`${API_URL}/movies/${id}`, {
-      method: 'DELETE',
-      headers: { Authorization: `Bearer ${token}` },
-    })
+    await deleteMovie(id, token)
     await this.fetchMovies()
   }
 }

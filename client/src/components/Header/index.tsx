@@ -39,7 +39,7 @@ export default function Header() {
             Logout
           </MyButton>
         ) : (
-          <MyButton colorVariant='primary' onClick={() => navigate('/auth')}>
+          <MyButton colorVariant='primary' onClick={() => navigate('/login')}>
             Login
           </MyButton>
         )}

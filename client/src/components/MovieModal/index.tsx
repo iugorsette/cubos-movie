@@ -9,7 +9,7 @@ import { createMovie, updateMovie } from '../../services/movies.service'
 import { useTheme } from '../../context/useTheme'
 import { Cross2Icon, PlusIcon } from '@radix-ui/react-icons'
 import { CLASSIFICACAO_INDICATIVA, type MovieFormData } from '../../types/movie'
-
+import './index.css'
 type MovieModalProps = {
   isOpen: boolean
   onClose: () => void
@@ -150,7 +150,8 @@ export default function MovieModal({
             right: 0,
             boxShadow: '0px 10px 30px rgba(0,0,0,0.2)',
             transition: 'all 0.3s ease-in-out',
-          }}>
+          }}
+          className='movie-modal'>
           <div
             style={{
               display: 'flex',

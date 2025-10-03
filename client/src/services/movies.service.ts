@@ -13,9 +13,14 @@ export async function getMovies(params: {
   take?: number
   search?: string
   generos?: string[]
+  classificacoes?: string[]
+  minDuration?: number
+  maxDuration?: number
+  startDate?: string
+  endDate?: string
   sortBy?: 'titulo' | 'dataLancamento' | 'popularidade'
   order?: 'asc' | 'desc'
-}): Promise<Movie[]> {
+}): Promise<{ movies: Movie[]; total: number }> {
   const query = new URLSearchParams()
   Object.entries(params).forEach(([key, value]) => {
     if (value !== undefined) {

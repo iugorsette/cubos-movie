@@ -1,62 +1,105 @@
-import { useSearchParams } from 'react-router-dom'
+import { useState, useEffect } from 'react'
 import { Flex, Button } from '@radix-ui/themes'
 import MovieCard from '../MovieCard'
 import MyButton from '../Button'
 import type { Movie } from '../../types/movie'
+import { getMovies } from '../../services/movies.service'
 
 type MovieListProps = {
-  movies: Movie[]
   perPage?: number
 }
 
-export default function MovieList({ movies, perPage = 6 }: MovieListProps) {
-  const [searchParams, setSearchParams] = useSearchParams()
-  const pageParam = parseInt(searchParams.get('page') ?? '1', 10)
-  const totalPages = Math.ceil(movies.length / perPage)
+export default function MovieList({ perPage = 6 }: MovieListProps) {
+  const [movies, setMovies] = useState<Movie[]>([])
+  const [total, setTotal] = useState(0)
+  const [page, setPage] = useState(1)
+  const [loading, setLoading] = useState(false)
 
-  const start = (pageParam - 1) * perPage
-  const currentMovies = movies.slice(start, start + perPage)
+  const totalPages = Math.ceil(total / perPage)
+
+  const fetchMovies = async (pageNumber: number) => {
+    setLoading(true)
+    try {
+      const skip = (pageNumber - 1) * perPage
+      const params = { skip, take: perPage } // aqui você pode adicionar filtros adicionais
+      const { movies, total } = await getMovies(params)
+      setMovies(movies)
+      setTotal(total)
+      setPage(pageNumber)
+    } catch (err) {
+      console.error(err)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    fetchMovies(1)
+  }, [])
 
   const goToPage = (newPage: number) => {
     if (newPage < 1 || newPage > totalPages) return
-    setSearchParams({ page: String(newPage) })
+    fetchMovies(newPage)
+  }
+
+  const getPageButtons = () => {
+    const buttons: (number | string)[] = []
+    const maxButtons = 5
+    const startPage = Math.max(1, page - 2)
+    const endPage = Math.min(totalPages, startPage + maxButtons - 1)
+
+    if (startPage > 1) buttons.push(1, '...')
+    for (let i = startPage; i <= endPage; i++) buttons.push(i)
+    if (endPage < totalPages) buttons.push('...', totalPages)
+
+    return buttons
   }
 
   return (
     <div>
       <Flex wrap='wrap' gap='3' justify='start'>
-        {currentMovies.map((movie) => (
-          <MovieCard
-            key={movie.id}
-            title={movie.titulo}
-            generos={movie.generos}
-            popularidade={movie.popularidade}
-            id={movie.id as string}
-            cover={movie.capaUrl}
-          />
-        ))}
+        {loading ? (
+          <p>Carregando...</p>
+        ) : (
+          movies.map((movie) => (
+            <MovieCard
+              key={movie.id}
+              title={movie.titulo}
+              generos={movie.generos}
+              popularidade={movie.popularidade}
+              id={movie.id as string}
+              cover={movie.capaUrl}
+            />
+          ))
+        )}
       </Flex>
 
-      <Flex justify='center' gap='2' mt='4'>
+      <Flex justify='center' gap='2' mt='4' wrap='wrap'>
         <Button
-          disabled={pageParam === 1}
-          onClick={() => goToPage(pageParam - 1)}
+          disabled={page === 1}
+          onClick={() => goToPage(page - 1)}
           variant='outline'>
           Anterior
         </Button>
 
-        {Array.from({ length: totalPages }, (_, i) => (
-          <MyButton
-            key={i}
-            variant={i + 1 === pageParam ? 'primary' : 'secondary'}
-            onClick={() => goToPage(i + 1)}>
-            {i + 1}
-          </MyButton>
-        ))}
+        {getPageButtons().map((p, i) =>
+          typeof p === 'number' ? (
+            <MyButton
+              key={i}
+              colorVariant={p === page ? 'primary' : 'secondary'}
+              onClick={() => goToPage(p)}>
+              {p}
+            </MyButton>
+          ) : (
+            <span key={i} style={{ padding: '0 6px', alignSelf: 'center' }}>
+              {p}
+            </span>
+          )
+        )}
 
         <Button
-          disabled={pageParam === totalPages}
-          onClick={() => goToPage(pageParam + 1)}
+          disabled={page === totalPages}
+          onClick={() => goToPage(page + 1)}
           variant='outline'>
           Próxima
         </Button>

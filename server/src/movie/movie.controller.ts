@@ -17,6 +17,7 @@ import { CreateMovieDto } from './dto/create-movie.dto';
 import { UpdateMovieDto } from './dto/update-movie.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
+import { SeedMoviesDto } from './dto/seed-movies.dto';
 
 @Controller('movies')
 export class MovieController {
@@ -51,7 +52,7 @@ export class MovieController {
   }
 
   @Get()
-  findAll(
+  async findAll(
     @Query('skip') skip?: string,
     @Query('take') take?: string,
     @Query('search') search?: string,
@@ -69,9 +70,9 @@ export class MovieController {
       ? classificacaoIndicativa.split(',')
       : [];
 
-    return this.movieService.findAll({
-      skip: skip ? Number(skip) : undefined,
-      take: take ? Number(take) : undefined,
+    return this.movieService.findAllWithCount({
+      skip: skip ? Number(skip) : 0,
+      take: take ? Number(take) : 10,
       search,
       generos: parsedGeneros,
       classificacoes: parsedClassificacao,
@@ -116,5 +117,15 @@ export class MovieController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.movieService.remove(id);
+  }
+
+  @Post('seed')
+  async seed(@Body() body: SeedMoviesDto) {
+    console.log('Criando ', body.count);
+    const count = body.count ?? 50;
+    const userId = 'e2541014-7c85-4998-938c-bacee7b71726'; // id conta sistema
+
+    const result = await this.movieService.seedMovies(count, userId);
+    return { message: `${count} filmes criados com sucesso!`, result };
   }
 }

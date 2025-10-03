@@ -4,6 +4,8 @@ import { CreateMovieDto } from './dto/create-movie.dto';
 import { UpdateMovieDto } from './dto/update-movie.dto';
 import { v4 as uuid } from 'uuid';
 import { Storage } from '@google-cloud/storage';
+import { Prisma } from '@prisma/client';
+type MovieSeedInput = CreateMovieDto & { createdBy: string };
 
 @Injectable()
 export class MovieService {
@@ -42,6 +44,81 @@ export class MovieService {
     });
   }
 
+  private generateMovie(userId: string): MovieSeedInput {
+    const generos = [
+      'Ação',
+      'Drama',
+      'Comédia',
+      'Terror',
+      'Ficção Científica',
+      'Romance',
+      'Suspense',
+      'Animação',
+      'Documentário',
+    ];
+    const classificacoes = [
+      'LIVRE',
+      'DEZ',
+      'DOZE',
+      'CATORZE',
+      'DEZESSEIS',
+      'DEZOITO',
+    ];
+
+    const randomInt = (min: number, max: number) =>
+      Math.floor(Math.random() * (max - min + 1)) + min;
+
+    const randomElement = <T>(arr: T[]) =>
+      arr[Math.floor(Math.random() * arr.length)];
+
+    const orcamento = randomInt(1_000_000, 200_000_000);
+    const receita = randomInt(orcamento, orcamento * 5);
+
+    return {
+      titulo: `Filme ${randomInt(1, 1000)}`,
+      tituloOriginal: `Original ${randomInt(1, 1000)}`,
+      subtitulo: `Uma frase épica ${randomInt(1, 100)}`,
+      sinopse: `Sinopse do filme ${randomInt(1, 1000)} descrevendo a história principal.`,
+      dataLancamento: new Date(
+        randomInt(1980, 2025),
+        randomInt(0, 11),
+        randomInt(1, 28),
+      ),
+      duracao: randomInt(80, 180),
+      generos: Array.from({ length: randomInt(1, 3) }, () =>
+        randomElement(generos),
+      ),
+      popularidade: randomInt(0, 1000),
+      votos: randomInt(0, 5000),
+      idioma: randomElement([
+        'Português',
+        'Inglês',
+        'Espanhol',
+        'Francês',
+        'Alemão',
+      ]),
+      orcamento,
+      receita,
+      lucro: receita - orcamento,
+      capaUrl: `https://picsum.photos/200/300?random=${randomInt(1, 1000)}`,
+      capaFundo: `https://picsum.photos/400/200?random=${randomInt(1, 1000)}`,
+      trailerUrl: `https://www.youtube.com/watch?v=dQw4w9WgXcQ`,
+      classificacaoIndicativa: randomElement(classificacoes),
+      createdBy: userId,
+    };
+  }
+
+  async seedMovies(count = 50, userId: string) {
+    await this.prisma.filme.deleteMany({});
+
+    const movies = Array.from({ length: count }).map(() =>
+      this.generateMovie(userId),
+    );
+
+    return this.prisma.filme.createMany({
+      data: movies,
+    });
+  }
   async create(
     createMovieDto: CreateMovieDto,
     userId: string,
@@ -133,6 +210,97 @@ export class MovieService {
       where: { id },
       data,
     });
+  }
+
+  async findAllWithCount(params: {
+    skip?: number;
+    take?: number;
+    search?: string;
+    generos?: string[];
+    classificacoes?: string[];
+    sortBy?: 'titulo' | 'dataLancamento' | 'popularidade' | 'createdAt';
+    order?: 'asc' | 'desc';
+    minDuration?: number;
+    maxDuration?: number;
+    startDate?: string;
+    endDate?: string;
+  }) {
+    const {
+      skip = 0,
+      take = 10,
+      sortBy = 'createdAt',
+      order = 'desc',
+      ...filters
+    } = params;
+
+    const where = this.buildWhere(filters);
+    const [movies, total] = await Promise.all([
+      this.prisma.filme.findMany({
+        skip,
+        take,
+        where,
+        orderBy: { [sortBy]: order },
+      }),
+      this.prisma.filme.count({ where }),
+    ]);
+
+    return { movies, total };
+  }
+
+  private buildWhere(params: {
+    search?: string;
+    generos?: string[];
+    classificacoes?: string[];
+    minDuration?: number;
+    maxDuration?: number;
+    startDate?: string;
+    endDate?: string;
+  }): Prisma.FilmeWhereInput {
+    const {
+      search,
+      generos,
+      classificacoes,
+      minDuration,
+      maxDuration,
+      startDate,
+      endDate,
+    } = params;
+
+    const conditions: (Prisma.FilmeWhereInput | undefined)[] = [
+      search
+        ? {
+            OR: [
+              { titulo: { contains: search, mode: 'insensitive' } },
+              { tituloOriginal: { contains: search, mode: 'insensitive' } },
+            ],
+          }
+        : undefined,
+      generos?.length ? { generos: { hasSome: generos } } : undefined,
+      classificacoes?.length
+        ? { classificacaoIndicativa: { in: classificacoes } }
+        : undefined,
+      minDuration || maxDuration
+        ? {
+            duracao: {
+              gte: minDuration ?? undefined,
+              lte: maxDuration ?? undefined,
+            },
+          }
+        : undefined,
+      startDate || endDate
+        ? {
+            dataLancamento: {
+              gte: startDate ? new Date(startDate) : undefined,
+              lte: endDate ? new Date(endDate) : undefined,
+            },
+          }
+        : undefined,
+    ];
+
+    // Remove undefined e force o tipo como FilmeWhereInput[]
+    return {
+      AND: conditions.filter(Boolean) as Prisma.FilmeWhereInput[],
+    };
   }
 
   findAll(params: {
