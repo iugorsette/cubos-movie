@@ -56,6 +56,7 @@ export class MovieController {
     @Query('take') take?: string,
     @Query('search') search?: string,
     @Query('generos') generos?: string,
+    @Query('classificacaoIndicativa') classificacaoIndicativa?: string,
     @Query('sortBy') sortBy?: 'titulo' | 'dataLancamento' | 'popularidade',
     @Query('order') order?: 'asc' | 'desc',
     @Query('minDuration') minDuration?: string,
@@ -64,12 +65,16 @@ export class MovieController {
     @Query('endDate') endDate?: string,
   ) {
     const parsedGeneros = generos ? generos.split(',') : [];
+    const parsedClassificacao = classificacaoIndicativa
+      ? classificacaoIndicativa.split(',')
+      : [];
 
     return this.movieService.findAll({
       skip: skip ? Number(skip) : undefined,
       take: take ? Number(take) : undefined,
       search,
       generos: parsedGeneros,
+      classificacoes: parsedClassificacao,
       sortBy,
       order,
       minDuration: minDuration ? Number(minDuration) : undefined,

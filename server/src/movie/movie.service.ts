@@ -139,6 +139,7 @@ export class MovieService {
     take?: number;
     search?: string;
     generos?: string[];
+    classificacoes?: string[];
     sortBy?: 'titulo' | 'dataLancamento' | 'popularidade' | 'createdAt';
     order?: 'asc' | 'desc';
     minDuration?: number;
@@ -151,6 +152,7 @@ export class MovieService {
       take = 10,
       search,
       generos,
+      classificacoes,
       sortBy = 'createdAt',
       order = 'desc',
       minDuration,
@@ -173,6 +175,9 @@ export class MovieService {
               }
             : {},
           generos?.length ? { generos: { hasSome: generos } } : {},
+          classificacoes?.length
+            ? { classificacaoIndicativa: { in: classificacoes } }
+            : {},
           minDuration || maxDuration
             ? {
                 duracao: {

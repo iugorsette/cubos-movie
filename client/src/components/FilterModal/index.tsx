@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import * as Dialog from '@radix-ui/react-dialog'
 import * as Select from '@radix-ui/react-select'
+import * as Checkbox from '@radix-ui/react-checkbox'
 import { Flex } from '@radix-ui/themes'
 import MyButton from '../Button'
 import {
@@ -20,11 +21,20 @@ type FilterModalProps = {
   isOpen: boolean
   onClose: () => void
 }
+const classificacoesIndicativas = [
+  { value: 'LIVRE', label: 'Livre' },
+  { value: 'DEZ', label: '10 anos' },
+  { value: 'DOZE', label: '12 anos' },
+  { value: 'CATORZE', label: '14 anos' },
+  { value: 'DEZESSEIS', label: '16 anos' },
+  { value: 'DEZOITO', label: '18 anos' },
+]
 
 export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
   const { isDark } = useTheme()
   const [searchParams, setSearchParams] = useSearchParams()
 
+  const [classificacoes, setClassificacoes] = useState<string[]>([])
   const [sortBy, setSortBy] = useState<
     'titulo' | 'dataLancamento' | 'popularidade'
   >('titulo')
@@ -38,7 +48,12 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
     end: '',
   })
 
-  // Inicializa filtros a partir da URL
+  function toggleClassificacao(value: string) {
+    setClassificacoes((prev) =>
+      prev.includes(value) ? prev.filter((c) => c !== value) : [...prev, value]
+    )
+  }
+
   useEffect(() => {
     const minDuration = searchParams.get('minDuration')
     const maxDuration = searchParams.get('maxDuration')
@@ -80,6 +95,7 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
       order,
       skip: 0,
       take: 5,
+      classificacaoIndicativa: classificacoes.join(','),
       minDuration: duration.min.toString(),
       maxDuration: duration.max.toString(),
       startDate: dateRange.start,
@@ -319,8 +335,52 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
                 </Select.Portal>
               </Select.Root>
             </div>
-          </Flex>
 
+            {/* Classificação indicativa */}
+            <div style={{ marginTop: 16 }}>
+              <strong style={{ display: 'block', marginBottom: 8 }}>
+                Classificação indicativa:
+              </strong>
+
+              <div style={{ display: 'flex', flexDirection: 'row', gap: 6 }}>
+                {classificacoesIndicativas.map((item) => (
+                  <label
+                    key={item.value}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 8,
+                      cursor: 'pointer',
+                      fontSize: 14,
+                      color: isDark ? '#f5f5f5' : '#111',
+                    }}>
+                    <Checkbox.Root
+                      checked={classificacoes.includes(item.value)}
+                      onCheckedChange={() => toggleClassificacao(item.value)}
+                      style={{
+                        width: 18,
+                        height: 18,
+                        borderRadius: 4,
+                        border: `1px solid ${isDark ? '#666' : '#aaa'}`,
+                        backgroundColor: classificacoes.includes(item.value)
+                          ? isDark
+                            ? '#8457AA'
+                            : '#8E4EC6'
+                          : 'transparent',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}>
+                      <Checkbox.Indicator>
+                        <CheckIcon style={{ color: '#fff' }} />
+                      </Checkbox.Indicator>
+                    </Checkbox.Root>
+                    {item.label}
+                  </label>
+                ))}
+              </div>
+            </div>
+          </Flex>
           {/* Footer */}
           <Flex
             justify='end'
@@ -335,6 +395,7 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
                 setOrder('asc')
                 setDuration({ min: 0, max: 300 })
                 setDateRange({ start: '', end: '' })
+                setClassificacoes([])
                 movieStore.setFilters({
                   sortBy: 'titulo',
                   order: 'asc',
@@ -344,6 +405,7 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
                   maxDuration: 300,
                   startDate: '',
                   endDate: '',
+                  classificacaoIndicativa: undefined,
                 })
                 setSearchParams({})
                 onClose()

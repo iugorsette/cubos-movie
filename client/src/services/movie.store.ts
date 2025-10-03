@@ -1,5 +1,5 @@
 import { BehaviorSubject } from 'rxjs'
-import type { Movie } from '../types/movie'
+import type { ClassificacaoIndicativa, Movie } from '../types/movie'
 import { getMovies } from './movies.service'
 
 type MovieFilters = {
@@ -7,6 +7,7 @@ type MovieFilters = {
   minDuration?: number
   maxDuration?: number
   startDate?: string
+  classificacaoIndicativa?: ClassificacaoIndicativa
   endDate?: string
   sortBy?: 'titulo' | 'dataLancamento' | 'popularidade'
   order?: 'asc' | 'desc'
