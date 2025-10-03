@@ -9,6 +9,7 @@ import { useAuth } from '../../context/useAuth'
 import PopularidadeRatio from '../../components/PopularidadeRatio'
 import TrailerFrame from '../../components/TrailerFrame'
 import GenerosChips from '../../components/GenerosChips'
+import Info from '../../components/Info'
 
 export default function MovieDetail() {
   const { id } = useParams()
@@ -19,6 +20,7 @@ export default function MovieDetail() {
   const [editOpen, setEditOpen] = useState(false)
 
   const isOwner = user?.id === movie?.createdBy
+
   useEffect(() => {
     if (id) fetchMovie()
   }, [id])
@@ -49,9 +51,8 @@ export default function MovieDetail() {
           backgroundPosition: 'center',
           padding: '40px 60px',
           display: 'flex',
-          gap: '32px',
-          alignItems: 'flex-start',
           flexDirection: 'column',
+          gap: '32px',
           position: 'relative',
         }}>
         <div
@@ -69,14 +70,16 @@ export default function MovieDetail() {
             zIndex: 1,
             width: '100%',
             justifyContent: 'space-between',
+            flexWrap: 'wrap',
           }}>
-          <Flex direction='column'>
+          <Flex direction='column' style={{ minWidth: '250px' }}>
             <Text size='8'>{movie.titulo}</Text>
             <Text size='3' style={{ marginBottom: '16px' }}>
               Título original: {movie.tituloOriginal}
             </Text>
           </Flex>
-          <Flex gap='3' style={{ marginTop: '24px' }}>
+
+          <Flex gap='3' style={{ marginTop: '24px', flexWrap: 'wrap' }}>
             <Button
               disabled={!isOwner}
               onClick={() => setEditOpen(true)}
@@ -94,26 +97,32 @@ export default function MovieDetail() {
             </Button>
           </Flex>
         </Flex>
+
         <Flex
           gap='5'
+          wrap='wrap'
           style={{
             position: 'relative',
             zIndex: 1,
+            width: '100%',
+            justifyContent: 'space-between',
           }}>
           <Flex
             gap='5'
             style={{
               position: 'relative',
               zIndex: 1,
-              width: '30%',
+              flex: '1 1 300px',
+              maxWidth: '380px',
             }}>
-            <div style={{ position: 'relative' }}>
+            <div style={{ position: 'relative', width: '100%' }}>
               {movie.capaUrl && (
                 <img
                   src={movie.capaUrl}
                   alt={movie.titulo}
                   style={{
-                    width: '380px',
+                    width: '100%',
+                    maxWidth: '380px',
                     borderRadius: '4px',
                     boxShadow: '0 4px 16px rgba(0,0,0,0.8)',
                   }}
@@ -121,25 +130,30 @@ export default function MovieDetail() {
               )}
             </div>
           </Flex>
+
           <Flex
             direction='column'
             gap='2'
             style={{
+              flex: '2 1 400px',
+              minWidth: '280px',
               justifyContent: 'space-between',
               zIndex: 1,
-              width: '50%',
             }}>
             <Flex direction='column' gap='8'>
-              <Text size='5'> Frase de impacto</Text>
+              <Text size='5'>Frase de impacto</Text>
               <Info label='Sinopse' value={movie.sinopse} bg={cardBg} />
             </Flex>
             <GenerosChips generos={movie.generos} />
           </Flex>
+
           <Flex
             gap='5'
             direction='column'
             style={{
-              width: '50%',
+              flex: '1 1 300px',
+              minWidth: '250px',
+              zIndex: 1,
             }}>
             <div
               style={{
@@ -158,13 +172,11 @@ export default function MovieDetail() {
               {movie.popularidade && (
                 <PopularidadeRatio popularidade={movie.popularidade || 0} />
               )}
-
               <Info
                 label='LANÇAMENTO'
                 value={movie.dataLancamento}
                 bg={cardBg}
               />
-
               <Info label='DURAÇÃO' value={movie.duracao} bg={cardBg} />
               <Info label='IDIOMA' value={movie.idioma} bg={cardBg} />
               <Info
@@ -183,10 +195,10 @@ export default function MovieDetail() {
                 bg={cardBg}
               />
             </div>
-            <Flex gap='5'></Flex>
           </Flex>
         </Flex>
       </div>
+
       {movie.trailerUrl && <TrailerFrame trailerUrl={movie.trailerUrl} />}
 
       <MovieModal
@@ -196,35 +208,6 @@ export default function MovieDetail() {
         token={token as string}
         onSaved={fetchMovie}
       />
-    </div>
-  )
-}
-
-function Info({
-  label,
-  value,
-  bg,
-}: {
-  label: string
-  value?: string
-  bg: string
-}) {
-  return (
-    <div
-      style={{
-        background: bg,
-        padding: '12px',
-        borderRadius: '4px',
-        fontSize: '0.9rem',
-      }}>
-      <strong
-        style={{
-          color: '#B5B2BC',
-        }}>
-        {label}
-      </strong>{' '}
-      <br />
-      <span>{value || '-'}</span>
     </div>
   )
 }
