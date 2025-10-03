@@ -29,6 +29,8 @@ export default function MovieList({ movies, perPage = 6 }: MovieListProps) {
           <MovieCard
             key={movie.id}
             title={movie.titulo}
+            generos={movie.generos}
+            popularidade={movie.popularidade}
             id={movie.id as string}
             cover={movie.capaUrl}
           />
