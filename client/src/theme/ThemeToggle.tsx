@@ -7,7 +7,7 @@ export default function ThemeToggle() {
 
   return (
     <MyButton
-      variant='secondary'
+      colorVariant='secondary'
       iconButton
       icon={
         isDark ? (

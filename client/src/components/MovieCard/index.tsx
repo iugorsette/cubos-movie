@@ -74,8 +74,10 @@ export default function MovieCard({
           margin: 0,
           color: isDark ? '#fff' : '#000',
           textAlign: 'center',
-          fontWeight: 500,
+          fontWeight: 600,
           zIndex: 1,
+          fontFamily: 'Montserrat, sans-serif',
+          textTransform: 'uppercase',
           transition: 'bottom 0.3s',
         }}>
         {title}
@@ -110,6 +112,8 @@ export default function MovieCard({
             textAlign: 'center',
             fontSize: 12,
             whiteSpace: 'nowrap',
+            textTransform: 'uppercase',
+            fontFamily: 'Montserrat',
             overflow: 'hidden',
             textOverflow: 'ellipsis',
             zIndex: 1,

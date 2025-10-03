@@ -86,7 +86,6 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
       endDate: dateRange.end,
     }
 
-    // Atualiza a store e a URL
     movieStore.setFilters(filters)
     setSearchParams(filters)
 
@@ -106,24 +105,22 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
         <Dialog.Content
           style={{
             backgroundColor: isDark
-              ? 'rgba(0,0,0,0.9)'
+              ? 'rgba(35, 34, 37, 1)'
               : 'rgba(255,255,255,0.9)',
-            padding: 24,
-            width: '50vw',
+            padding: '4px 24px ',
+            width: '40vw',
             height: '55vh',
             position: 'fixed',
             top: '50%',
             left: '50%',
             transform: 'translate(-50%, -50%)',
-            borderRadius: 12,
+            borderRadius: 4,
             display: 'flex',
             flexDirection: 'column',
             boxShadow: '0px 10px 30px rgba(0,0,0,0.2)',
           }}>
-          <Flex justify='between' align='center' mb='3'>
-            <Dialog.Title style={{ fontSize: 20 }}>
-              Filtros de Filmes
-            </Dialog.Title>
+          <Flex justify='between' align='center' mb='2'>
+            <Dialog.Title style={{ fontSize: 20 }}>Filtros</Dialog.Title>
             <Dialog.Close asChild>
               <button
                 style={{
@@ -177,7 +174,13 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
               <strong style={{ display: 'block', marginBottom: 8 }}>
                 Data de lançamento:
               </strong>
-              <Flex gap='3' wrap='wrap'>
+              <div
+                style={{
+                  display: 'flex',
+                  gap: 12,
+                  flexWrap: 'wrap',
+                  width: '100%',
+                }}>
                 <MyInput
                   type='date'
                   width='48%'
@@ -196,10 +199,9 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
                     setDateRange({ ...dateRange, end: e.target.value })
                   }
                 />
-              </Flex>
+              </div>
             </div>
 
-            {/* Ordenar por */}
             <div
               style={{
                 display: 'flex',
