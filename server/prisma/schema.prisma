@@ -28,7 +28,7 @@ model Filme {
   tituloOriginal String?
   sinopse        String?
   dataLancamento DateTime
-  duracao        String?
+  duracao        Float?
   popularidade   Float?
   votos          Int?
   idioma         String?

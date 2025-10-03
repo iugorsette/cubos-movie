@@ -22,8 +22,8 @@ export class CreateMovieDto {
   @IsDate()
   dataLancamento: Date;
 
-  @IsString()
-  duracao: string;
+  @IsNumber()
+  duracao: number;
 
   @IsNumber()
   @IsOptional()

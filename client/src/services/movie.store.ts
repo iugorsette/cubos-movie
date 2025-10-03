@@ -4,10 +4,10 @@ import { getMovies } from './movies.service'
 
 type MovieFilters = {
   search?: string
-  generos?: string[]
-  duration?: { min: number; max: number }
-  dateRange?: { start: string; end: string }
-  minRating?: number
+  minDuration?: number
+  maxDuration?: number
+  startDate?: string
+  endDate?: string
   sortBy?: 'titulo' | 'dataLancamento' | 'popularidade'
   order?: 'asc' | 'desc'
   skip?: number
@@ -19,7 +19,7 @@ class MovieStore {
   private moviesSubject = new BehaviorSubject<Movie[]>([])
   public movies$ = this.moviesSubject.asObservable()
 
-  private filters: MovieFilters = { take: 50, skip: 0 }
+  private filters: MovieFilters = { take: 5, skip: 0 }
 
   setFilters(filters: MovieFilters) {
     this.filters = { ...this.filters, ...filters }

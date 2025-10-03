@@ -71,7 +71,7 @@ export class MovieService {
         tituloOriginal: createMovieDto.tituloOriginal,
         sinopse: createMovieDto.sinopse,
         dataLancamento,
-        duracao: createMovieDto.duracao,
+        duracao: Number(createMovieDto.duracao),
         generos: createMovieDto.generos,
         idioma: createMovieDto.idioma,
         popularidade: Number(createMovieDto.popularidade) || 0,
@@ -100,6 +100,7 @@ export class MovieService {
       'orcamento',
       'receita',
       'lucro',
+      'duracao',
     ];
 
     const data: any = Object.entries(updateMovieDto).reduce(
@@ -137,6 +138,10 @@ export class MovieService {
     generos?: string[];
     sortBy?: 'titulo' | 'dataLancamento' | 'popularidade' | 'createdAt';
     order?: 'asc' | 'desc';
+    minDuration?: number;
+    maxDuration?: number;
+    startDate?: string;
+    endDate?: string;
   }) {
     const {
       skip = 0,
@@ -145,6 +150,10 @@ export class MovieService {
       generos,
       sortBy = 'createdAt',
       order = 'desc',
+      minDuration,
+      maxDuration,
+      startDate,
+      endDate,
     } = params;
 
     return this.prisma.filme.findMany({
@@ -161,6 +170,22 @@ export class MovieService {
               }
             : {},
           generos?.length ? { generos: { hasSome: generos } } : {},
+          minDuration || maxDuration
+            ? {
+                duracao: {
+                  gte: minDuration ?? undefined,
+                  lte: maxDuration ?? undefined,
+                },
+              }
+            : {},
+          startDate || endDate
+            ? {
+                dataLancamento: {
+                  gte: startDate ? new Date(startDate) : undefined,
+                  lte: endDate ? new Date(endDate) : undefined,
+                },
+              }
+            : {},
         ],
       },
       orderBy: { [sortBy]: order },

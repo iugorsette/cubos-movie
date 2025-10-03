@@ -58,8 +58,13 @@ export class MovieController {
     @Query('generos') generos?: string,
     @Query('sortBy') sortBy?: 'titulo' | 'dataLancamento' | 'popularidade',
     @Query('order') order?: 'asc' | 'desc',
+    @Query('minDuration') minDuration?: string,
+    @Query('maxDuration') maxDuration?: string,
+    @Query('startDate') startDate?: string,
+    @Query('endDate') endDate?: string,
   ) {
     const parsedGeneros = generos ? generos.split(',') : [];
+
     return this.movieService.findAll({
       skip: skip ? Number(skip) : undefined,
       take: take ? Number(take) : undefined,
@@ -67,6 +72,10 @@ export class MovieController {
       generos: parsedGeneros,
       sortBy,
       order,
+      minDuration: minDuration ? Number(minDuration) : undefined,
+      maxDuration: maxDuration ? Number(maxDuration) : undefined,
+      startDate,
+      endDate,
     });
   }
 

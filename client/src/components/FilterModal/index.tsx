@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import * as Dialog from '@radix-ui/react-dialog'
 import * as Select from '@radix-ui/react-select'
-import * as Checkbox from '@radix-ui/react-checkbox'
 import { Flex } from '@radix-ui/themes'
 import MyButton from '../Button'
 import {
@@ -13,25 +12,23 @@ import {
 import { movieStore } from '../../services/movie.store'
 import { useTheme } from '../../context/useTheme'
 import MyInput from '../Input'
+import Slider from 'rc-slider'
+import 'rc-slider/assets/index.css'
+import { useSearchParams } from 'react-router-dom'
 
 type FilterModalProps = {
   isOpen: boolean
   onClose: () => void
 }
 
-const allGenres = ['acao', 'superheroi', 'ficcao', 'comedia', 'drama']
-
 export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
   const { isDark } = useTheme()
-  const themeClass = isDark ? 'dark' : 'light'
 
-  const [selectedGenres, setSelectedGenres] = useState<string[]>([])
   const [sortBy, setSortBy] = useState<
     'titulo' | 'dataLancamento' | 'popularidade'
   >('titulo')
   const [order, setOrder] = useState<'asc' | 'desc'>('asc')
 
-  // Novos filtros obrigatórios
   const [duration, setDuration] = useState<{ min: number; max: number }>({
     min: 0,
     max: 300,
@@ -40,27 +37,24 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
     start: '',
     end: '',
   })
-
-  // Filtro extra sugerido
-  const [minRating, setMinRating] = useState<number>(0)
-
-  function toggleGenre(genre: string) {
-    setSelectedGenres((prev) =>
-      prev.includes(genre) ? prev.filter((g) => g !== genre) : [...prev, genre]
-    )
-  }
+  const [searchParams, setSearchParams] = useSearchParams()
 
   function applyFilters() {
-    movieStore.setFilters({
-      generos: selectedGenres,
+    const filters = {
       sortBy,
       order,
-      duration,
-      dateRange,
-      minRating,
       skip: 0,
-      take: 50,
-    })
+      take: 5,
+      minDuration: duration.min.toString(),
+      maxDuration: duration.max.toString(),
+      startDate: dateRange.start,
+      endDate: dateRange.end,
+    }
+
+    movieStore.setFilters(filters)
+
+    setSearchParams(filters)
+
     onClose()
   }
 
@@ -124,125 +118,58 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
               gap: 16,
               alignItems: 'flex-start', // alinha os itens ao topo
             }}>
-            {/* Gêneros */}
-            <div
-              style={{
-                display: 'flex',
-                flexWrap: 'wrap',
-                gap: 12,
-                width: '100%',
-              }}>
-              <strong style={{ width: '100%' }}>Gêneros:</strong>
-              {allGenres.map((genre) => (
-                <label
-                  key={genre}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 8,
-                    fontSize: 14,
-                    color: isDark ? '#f5f5f5' : '#111',
-                    width: 'calc(33% - 8px)', // 3 por linha
-                    minWidth: 80,
-                  }}>
-                  <Checkbox.Root
-                    checked={selectedGenres.includes(genre)}
-                    onCheckedChange={() => toggleGenre(genre)}
-                    style={{
-                      width: 20,
-                      height: 20,
-                      borderRadius: 4,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      border: `1px solid ${isDark ? '#444' : '#ccc'}`,
-                      backgroundColor: isDark ? '#222' : '#fff',
-                      flexShrink: 0,
-                    }}>
-                    <Checkbox.Indicator>
-                      <CheckIcon />
-                    </Checkbox.Indicator>
-                  </Checkbox.Root>
-                  {genre}
-                </label>
-              ))}
-            </div>
-
             {/* Duração */}
-            <div
-              style={{
-                display: 'flex',
-                gap: 12,
-                flexWrap: 'wrap',
-                width: '100%',
-              }}>
-              <strong style={{ width: '100%' }}>Duração (minutos):</strong>
-              <MyInput
-                type='number'
-                label='Mín'
-                width='48%'
-                value={duration.min}
-                onChange={(e) =>
-                  setDuration({ ...duration, min: Number(e.target.value) })
-                }
-              />
-              <MyInput
-                type='number'
-                label='Máx'
-                width='48%'
-                value={duration.max}
-                onChange={(e) =>
-                  setDuration({ ...duration, max: Number(e.target.value) })
-                }
-              />
+            <div style={{ width: '100%' }}>
+              <strong>Duração (minutos):</strong>
+              <div style={{ margin: '12px ' }}>
+                <Slider
+                  range
+                  min={0}
+                  max={300}
+                  step={10}
+                  value={[duration.min, duration.max]}
+                  onChange={(val) =>
+                    setDuration({
+                      min: val[0] as number,
+                      max: val[1] as number,
+                    })
+                  }
+                />
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span>{duration.min} min</span>
+                <span>{duration.max} min</span>
+              </div>
             </div>
 
             {/* Data de lançamento */}
-            <div
-              style={{
-                display: 'flex',
-                gap: 12,
-                flexWrap: 'wrap',
-                width: '100%',
-              }}>
-              <strong style={{ width: '100%' }}>Data de lançamento:</strong>
-              <MyInput
-                type='date'
-                width='48%'
-                value={dateRange.start}
-                onChange={(e) =>
-                  setDateRange({ ...dateRange, start: e.target.value })
-                }
-              />
-              <MyInput
-                type='date'
-                width='48%'
-                value={dateRange.end}
-                onChange={(e) =>
-                  setDateRange({ ...dateRange, end: e.target.value })
-                }
-              />
+            <div style={{ width: '100%' }}>
+              <strong style={{ display: 'block', marginBottom: 8 }}>
+                Data de lançamento:
+              </strong>
+              <Flex gap='3' wrap='wrap'>
+                <MyInput
+                  type='date'
+                  width='48%'
+                  label='De'
+                  value={dateRange.start}
+                  onChange={(e) =>
+                    setDateRange({ ...dateRange, start: e.target.value })
+                  }
+                />
+                <MyInput
+                  type='date'
+                  width='48%'
+                  label='Até'
+                  value={dateRange.end}
+                  onChange={(e) =>
+                    setDateRange({ ...dateRange, end: e.target.value })
+                  }
+                />
+              </Flex>
             </div>
 
             {/* Filtro extra */}
-            <div
-              style={{
-                display: 'flex',
-                gap: 12,
-                flexWrap: 'wrap',
-                width: '100%',
-              }}>
-              <strong style={{ width: '100%' }}>Avaliação mínima:</strong>
-              <MyInput
-                type='number'
-                min={0}
-                max={10}
-                step={0.1}
-                width='100%'
-                value={minRating}
-                onChange={(e) => setMinRating(Number(e.target.value))}
-              />
-            </div>
 
             {/* Ordenar por */}
             <div
