@@ -82,15 +82,15 @@ export default function MovieDetail() {
           <Flex gap='3' style={{ marginTop: '24px', flexWrap: 'wrap' }}>
             <Button
               disabled={!isOwner}
-              onClick={() => setEditOpen(true)}
-              style={{ background: '#9333ea' }}>
-              Editar
-            </Button>
-            <Button
-              disabled={!isOwner}
               onClick={() => alert('Deletar')}
               style={{ background: '#dc2626' }}>
               Deletar
+            </Button>
+            <Button
+              disabled={!isOwner}
+              onClick={() => setEditOpen(true)}
+              style={{ background: '#9333ea' }}>
+              Editar
             </Button>
             <Button variant='outline' onClick={() => navigate(-1)}>
               Voltar
@@ -158,10 +158,8 @@ export default function MovieDetail() {
             <div
               style={{
                 display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))',
                 gap: '12px',
-                marginTop: '20px',
-                alignItems: 'center',
               }}>
               <Info
                 label='POPULARIDADE'
@@ -169,12 +167,10 @@ export default function MovieDetail() {
                 bg={cardBg}
               />
               <Info label='Votos' value={movie.votos?.toString()} bg={cardBg} />
-              {movie.popularidade && (
-                <PopularidadeRatio popularidade={movie.popularidade || 0} />
-              )}
+              <PopularidadeRatio popularidade={movie.popularidade || 0} />
               <Info
                 label='LANÇAMENTO'
-                value={movie.dataLancamento}
+                value={formatDateDDMMYYYY(movie.dataLancamento)}
                 bg={cardBg}
               />
               <Info label='DURAÇÃO' value={movie.duracao} bg={cardBg} />
@@ -210,4 +206,12 @@ export default function MovieDetail() {
       />
     </div>
   )
+}
+function formatDateDDMMYYYY(dateString?: string) {
+  if (!dateString) return '-'
+  const date = new Date(dateString)
+  const day = String(date.getDate()).padStart(2, '0')
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const year = date.getFullYear()
+  return `${day}-${month}-${year}`
 }

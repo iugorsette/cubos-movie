@@ -72,7 +72,13 @@ export default function MovieModal({
 
   useEffect(() => {
     if (initialData) {
-      setForm(initialData)
+      const formattedData = initialData.dataLancamento
+        ? new Date(initialData.dataLancamento).toISOString().split('T')[0]
+        : ''
+      setForm({
+        ...initialData,
+        dataLancamento: formattedData,
+      })
       setCapaPreview(initialData.capaUrl || null)
       setCapaFundoPreview(initialData.capaFundo || null)
     }
@@ -276,7 +282,7 @@ export default function MovieModal({
                           display: 'flex',
                           alignItems: 'center',
                           backgroundColor: isDark ? '#8457AA' : '#8E4EC6',
-                          color:'#eee',
+                          color: '#eee',
                           padding: '4px 12px',
                           fontSize: 15,
                         }}>
