@@ -10,6 +10,7 @@ import PopularidadeRatio from '../../components/PopularidadeRatio'
 import TrailerFrame from '../../components/TrailerFrame'
 import GenerosChips from '../../components/GenerosChips'
 import Info from '../../components/Info'
+import MyButton from '../../components/Button'
 
 export default function MovieDetail() {
   const { id } = useParams()
@@ -79,21 +80,18 @@ export default function MovieDetail() {
           </Flex>
 
           <Flex gap='3' style={{ marginTop: '24px', flexWrap: 'wrap' }}>
-            <Button
+            <MyButton
+              colorVariant='secondary'
               disabled={!isOwner}
-              onClick={() => alert('Deletar')}
-              style={{ background: '#dc2626' }}>
+              onClick={() => alert('Deletar')}>
               Deletar
-            </Button>
-            <Button
-              disabled={!isOwner}
-              onClick={() => setEditOpen(true)}
-              style={{ background: '#9333ea' }}>
+            </MyButton>
+            <MyButton disabled={!isOwner} onClick={() => setEditOpen(true)}>
               Editar
-            </Button>
-            <Button variant='outline' onClick={() => navigate(-1)}>
+            </MyButton>
+            <MyButton variant='outline' onClick={() => navigate(-1)}>
               Voltar
-            </Button>
+            </MyButton>
           </Flex>
         </Flex>
 
@@ -165,14 +163,14 @@ export default function MovieDetail() {
                 value={movie.popularidade?.toString()}
               />
               {/* Livre, 10 anos, 12 anos, 14 anos, 16 anos e 18 anos */}
-              <Info label='Votos' value={movie.votos?.toString()} />
+              <Info label='VOTOS' value={movie.votos?.toString()} />
               <PopularidadeRatio popularidade={movie.popularidade || 0} />
               <Info
                 label='LANÇAMENTO'
                 value={movie.dataLancamento}
                 type='date'
               />
-              <Info label='DURAÇÃO' value={movie.duracao} />
+              <Info label='DURAÇÃO' value={movie.duracao} type='duration' />
               <Info label='IDIOMA' value={movie.idioma} />
               <Info label='ORÇAMENTO' value={movie.orcamento} type='currency' />
               <Info label='RECEITA' value={movie.receita} type='currency' />

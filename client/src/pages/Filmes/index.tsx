@@ -42,7 +42,7 @@ export default function Filmes() {
         />
 
         <Flex gap='2' ml='4' style={{ padding: '0 36px' }}>
-          <MyButton variant='secondary' onClick={() => setFiltersOpen(true)}>
+          <MyButton colorVariant='secondary' onClick={() => setFiltersOpen(true)}>
             Filtros
           </MyButton>
 
@@ -51,7 +51,7 @@ export default function Filmes() {
             onClose={() => setFiltersOpen(false)}
           />
 
-          <MyButton variant='primary' onClick={handleAddMovie}>
+          <MyButton colorVariant='primary' onClick={handleAddMovie}>
             Adicionar Filme
           </MyButton>
         </Flex>

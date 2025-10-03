@@ -35,11 +35,11 @@ export default function Header() {
       <Flex align='center' gap='3'>
         <ThemeToggle />
         {isLoggedIn ? (
-          <MyButton variant='primary' color='red' onClick={logout}>
+          <MyButton colorVariant='primary' color='red' onClick={logout}>
             Logout
           </MyButton>
         ) : (
-          <MyButton variant='primary' onClick={() => navigate('/auth')}>
+          <MyButton colorVariant='primary' onClick={() => navigate('/auth')}>
             Login
           </MyButton>
         )}

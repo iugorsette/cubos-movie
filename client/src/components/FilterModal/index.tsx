@@ -327,7 +327,7 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
             }}
             mt='3'>
             <MyButton
-              variant='secondary'
+              colorVariant='secondary'
               onClick={() => {
                 setSortBy('titulo')
                 setOrder('asc')
@@ -349,9 +349,9 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
               Limpar filtros
             </MyButton>
             <Dialog.Close asChild>
-              <MyButton variant='secondary'>Cancelar</MyButton>
+              <MyButton colorVariant='secondary'>Cancelar</MyButton>
             </Dialog.Close>
-            <MyButton variant='primary' onClick={applyFilters}>
+            <MyButton colorVariant='primary' onClick={applyFilters}>
               Aplicar
             </MyButton>
           </Flex>

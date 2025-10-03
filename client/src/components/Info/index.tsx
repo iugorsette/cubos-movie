@@ -17,7 +17,9 @@ export default function Info({
   let displayValue: string = '-'
 
   if (value !== undefined && value !== null) {
-    if (type === 'currency') {
+    if (type === 'duration') {
+      displayValue = `${value} min`  
+    } else if (type === 'currency') {
       displayValue = formatCurrency(value)
     } else if (type === 'date') {
       displayValue = formatDateDDMMYYYY(value.toString())
