@@ -34,7 +34,6 @@ export default function MovieDetail() {
 
   const bgOverlay = isDark ? 'rgba(0,0,0,0.7)' : 'rgba(255,255,255,0.6)'
   const textColor = isDark ? '#fff' : '#111'
-  const cardBg = isDark ? 'rgba(35, 34, 37, 0.75)' : 'rgba(0,0,0,0.05)'
 
   return (
     <div
@@ -142,7 +141,7 @@ export default function MovieDetail() {
             }}>
             <Flex direction='column' gap='8'>
               <Text size='5'>Frase de impacto</Text>
-              <Info label='Sinopse' value={movie.sinopse} bg={cardBg} />
+              <Info label='SINOPSE' value={movie.sinopse} />
             </Flex>
             <GenerosChips generos={movie.generos} />
           </Flex>
@@ -162,34 +161,22 @@ export default function MovieDetail() {
                 gap: '12px',
               }}>
               <Info
-                label='POPULARIDADE'
+                label='CLASSIFICAÇÃO INDICATIVA'
                 value={movie.popularidade?.toString()}
-                bg={cardBg}
               />
-              <Info label='Votos' value={movie.votos?.toString()} bg={cardBg} />
+              {/* Livre, 10 anos, 12 anos, 14 anos, 16 anos e 18 anos */}
+              <Info label='Votos' value={movie.votos?.toString()} />
               <PopularidadeRatio popularidade={movie.popularidade || 0} />
               <Info
                 label='LANÇAMENTO'
-                value={formatDateDDMMYYYY(movie.dataLancamento)}
-                bg={cardBg}
+                value={movie.dataLancamento}
+                type='date'
               />
-              <Info label='DURAÇÃO' value={movie.duracao} bg={cardBg} />
-              <Info label='IDIOMA' value={movie.idioma} bg={cardBg} />
-              <Info
-                label='ORÇAMENTO'
-                value={movie.orcamento ? `US$ ${movie.orcamento}` : '-'}
-                bg={cardBg}
-              />
-              <Info
-                label='RECEITA'
-                value={movie.receita ? `US$ ${movie.receita}` : '-'}
-                bg={cardBg}
-              />
-              <Info
-                label='LUCRO'
-                value={movie.lucro ? `US$ ${movie.lucro}` : '-'}
-                bg={cardBg}
-              />
+              <Info label='DURAÇÃO' value={movie.duracao} />
+              <Info label='IDIOMA' value={movie.idioma} />
+              <Info label='ORÇAMENTO' value={movie.orcamento} type='currency' />
+              <Info label='RECEITA' value={movie.receita} type='currency' />
+              <Info label='LUCRO' value={movie.lucro} type='currency' />
             </div>
           </Flex>
         </Flex>
