@@ -1,19 +1,18 @@
-import type { Movie } from '../types/movie'
+import type { Movie, ClassificacaoIndicativa } from '../types/movie'
 
-const API_URL = 'http://localhost:3000/movies'
-
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000'
+const apiEndpoint = `${API_URL}/movies`
 export async function getMovieById(id: string): Promise<Movie> {
-  const res = await fetch(`${API_URL}/${id}`)
+  const res = await fetch(`${apiEndpoint}/${id}`)
   return res.json()
 }
-
 
 export async function getMovies(params: {
   skip?: number
   take?: number
   search?: string
   generos?: string[]
-  classificacoes?: string[]
+  classificacoesIndicativas?: ClassificacaoIndicativa[]
   minDuration?: number
   maxDuration?: number
   startDate?: string
@@ -27,25 +26,18 @@ export async function getMovies(params: {
       query.append(key, Array.isArray(value) ? value.join(',') : String(value))
     }
   })
-  const res = await fetch(`${API_URL}?${query.toString()}`)
+  const res = await fetch(`${apiEndpoint}?${query.toString()}`)
   return res.json()
 }
 
 export async function createMovie(movie: Movie | FormData, token: string) {
   const body = movie instanceof FormData ? movie : JSON.stringify(movie)
+  const headers: HeadersInit =
+    movie instanceof FormData
+      ? { Authorization: `Bearer ${token}` }
+      : { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }
 
-  const headers: HeadersInit = movie instanceof FormData
-    ? { Authorization: `Bearer ${token}` } // FormData => não precisa de content-type
-    : {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      }
-
-  const res = await fetch(API_URL, {
-    method: 'POST',
-    headers,
-    body,
-  })
+  const res = await fetch(apiEndpoint, { method: 'POST', headers, body })
   return res.json()
 }
 
@@ -55,15 +47,12 @@ export async function updateMovie(
   token: string
 ) {
   const body = movie instanceof FormData ? movie : JSON.stringify(movie)
+  const headers: HeadersInit =
+    movie instanceof FormData
+      ? { Authorization: `Bearer ${token}` }
+      : { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }
 
-  const headers: HeadersInit = movie instanceof FormData
-    ? { Authorization: `Bearer ${token}` }
-    : {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      }
-
-  const res = await fetch(`${API_URL}/${id}`, {
+  const res = await fetch(`${apiEndpoint}/${id}`, {
     method: 'PATCH',
     headers,
     body,
@@ -72,7 +61,7 @@ export async function updateMovie(
 }
 
 export async function deleteMovie(id: string, token: string) {
-  const res = await fetch(`${API_URL}/${id}`, {
+  const res = await fetch(`${apiEndpoint}/${id}`, {
     method: 'DELETE',
     headers: { Authorization: `Bearer ${token}` },
   })

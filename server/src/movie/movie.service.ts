@@ -217,7 +217,7 @@ export class MovieService {
     take?: number;
     search?: string;
     generos?: string[];
-    classificacoes?: string[];
+    classificacoesIndicativas?: string[];
     sortBy?: 'titulo' | 'dataLancamento' | 'popularidade' | 'createdAt';
     order?: 'asc' | 'desc';
     minDuration?: number;
@@ -250,7 +250,7 @@ export class MovieService {
   private buildWhere(params: {
     search?: string;
     generos?: string[];
-    classificacoes?: string[];
+    classificacoesIndicativas?: string[];
     minDuration?: number;
     maxDuration?: number;
     startDate?: string;
@@ -259,7 +259,7 @@ export class MovieService {
     const {
       search,
       generos,
-      classificacoes,
+      classificacoesIndicativas,
       minDuration,
       maxDuration,
       startDate,
@@ -276,8 +276,8 @@ export class MovieService {
           }
         : undefined,
       generos?.length ? { generos: { hasSome: generos } } : undefined,
-      classificacoes?.length
-        ? { classificacaoIndicativa: { in: classificacoes } }
+      classificacoesIndicativas?.length
+        ? { classificacaoIndicativa: { in: classificacoesIndicativas } }
         : undefined,
       minDuration || maxDuration
         ? {

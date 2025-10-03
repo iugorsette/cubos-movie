@@ -57,7 +57,7 @@ export class MovieController {
     @Query('take') take?: string,
     @Query('search') search?: string,
     @Query('generos') generos?: string,
-    @Query('classificacaoIndicativa') classificacaoIndicativa?: string,
+    @Query('classificacoesIndicativas') classificacoesIndicativas?: string,
     @Query('sortBy') sortBy?: 'titulo' | 'dataLancamento' | 'popularidade',
     @Query('order') order?: 'asc' | 'desc',
     @Query('minDuration') minDuration?: string,
@@ -66,8 +66,8 @@ export class MovieController {
     @Query('endDate') endDate?: string,
   ) {
     const parsedGeneros = generos ? generos.split(',') : [];
-    const parsedClassificacao = classificacaoIndicativa
-      ? classificacaoIndicativa.split(',')
+    const parsedClassificacao = classificacoesIndicativas
+      ? classificacoesIndicativas.split(',')
       : [];
 
     return this.movieService.findAllWithCount({
@@ -75,7 +75,7 @@ export class MovieController {
       take: take ? Number(take) : 10,
       search,
       generos: parsedGeneros,
-      classificacoes: parsedClassificacao,
+      classificacoesIndicativas: parsedClassificacao,
       sortBy,
       order,
       minDuration: minDuration ? Number(minDuration) : undefined,

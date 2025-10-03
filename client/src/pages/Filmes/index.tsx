@@ -57,7 +57,7 @@ export default function Filmes() {
         </Flex>
       </Flex>
 
-      <MovieList movies={movies} perPage={6} />
+      <MovieList movies={movies} perPage={14} />
 
       <MovieModal
         isOpen={modalOpen}

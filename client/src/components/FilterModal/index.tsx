@@ -53,6 +53,7 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
       prev.includes(value) ? prev.filter((c) => c !== value) : [...prev, value]
     )
   }
+  const DEFAULT_TAKE = 14
 
   useEffect(() => {
     const minDuration = searchParams.get('minDuration')
@@ -76,12 +77,11 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
     if (sortByParam) setSortBy(sortByParam)
     if (orderParam) setOrder(orderParam)
 
-    // Aplica filtros na primeira consulta
     movieStore.setFilters({
       sortBy: sortByParam || 'titulo',
       order: orderParam || 'asc',
       skip: 0,
-      take: 5,
+      take: DEFAULT_TAKE,
       minDuration: minDuration ? Number(minDuration) : 0,
       maxDuration: maxDuration ? Number(maxDuration) : 300,
       startDate: startDate || '',
@@ -94,8 +94,8 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
       sortBy,
       order,
       skip: 0,
-      take: 5,
-      classificacaoIndicativa: classificacoes.join(','),
+      take: DEFAULT_TAKE,
+      classificacoesIndicativas: classificacoes.join(','),
       minDuration: duration.min.toString(),
       maxDuration: duration.max.toString(),
       startDate: dateRange.start,
@@ -407,12 +407,12 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
                   sortBy: 'titulo',
                   order: 'asc',
                   skip: 0,
-                  take: 5,
+                  take: DEFAULT_TAKE,
                   minDuration: 0,
                   maxDuration: 300,
                   startDate: '',
                   endDate: '',
-                  classificacaoIndicativa: undefined,
+                  classificacoesIndicativas: undefined,
                 })
                 setSearchParams({})
                 onClose()

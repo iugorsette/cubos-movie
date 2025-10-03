@@ -3,13 +3,11 @@ import { Flex, Button } from '@radix-ui/themes'
 import MovieCard from '../MovieCard'
 import MyButton from '../Button'
 import type { Movie } from '../../types/movie'
-import { getMovies } from '../../services/movies.service'
+import { movieStore } from '../../services/movie.store'
 
-type MovieListProps = {
-  perPage?: number
-}
+type MovieListProps = { perPage?: number }
 
-export default function MovieList({ perPage = 6 }: MovieListProps) {
+export default function MovieList({ perPage = 14 }: MovieListProps) {
   const [movies, setMovies] = useState<Movie[]>([])
   const [total, setTotal] = useState(0)
   const [page, setPage] = useState(1)
@@ -17,29 +15,21 @@ export default function MovieList({ perPage = 6 }: MovieListProps) {
 
   const totalPages = Math.ceil(total / perPage)
 
-  const fetchMovies = async (pageNumber: number) => {
-    setLoading(true)
-    try {
-      const skip = (pageNumber - 1) * perPage
-      const params = { skip, take: perPage } // aqui você pode adicionar filtros adicionais
-      const { movies, total } = await getMovies(params)
-      setMovies(movies)
-      setTotal(total)
-      setPage(pageNumber)
-    } catch (err) {
-      console.error(err)
-    } finally {
-      setLoading(false)
-    }
-  }
-
+  // Assina o store
   useEffect(() => {
-    fetchMovies(1)
-  }, [])
+    const subMovies = movieStore.movies$.subscribe(setMovies)
+    const subTotal = movieStore.total$.subscribe(setTotal)
+    movieStore.setFilters({ take: perPage, skip: 0 })
+    return () => {
+      subMovies.unsubscribe()
+      subTotal.unsubscribe()
+    }
+  }, [perPage])
 
   const goToPage = (newPage: number) => {
     if (newPage < 1 || newPage > totalPages) return
-    fetchMovies(newPage)
+    setPage(newPage)
+    movieStore.setPage(newPage)
   }
 
   const getPageButtons = () => {
@@ -57,7 +47,7 @@ export default function MovieList({ perPage = 6 }: MovieListProps) {
 
   return (
     <div>
-      <Flex wrap='wrap' gap='3' justify='start'>
+      <Flex wrap="wrap" gap="3" justify="start">
         {loading ? (
           <p>Carregando...</p>
         ) : (
@@ -74,11 +64,8 @@ export default function MovieList({ perPage = 6 }: MovieListProps) {
         )}
       </Flex>
 
-      <Flex justify='center' gap='2' mt='4' wrap='wrap'>
-        <Button
-          disabled={page === 1}
-          onClick={() => goToPage(page - 1)}
-          variant='outline'>
+      <Flex justify="center" gap="2" mt="4" wrap="wrap">
+        <Button disabled={page === 1} onClick={() => goToPage(page - 1)} variant="outline">
           Anterior
         </Button>
 
@@ -87,7 +74,8 @@ export default function MovieList({ perPage = 6 }: MovieListProps) {
             <MyButton
               key={i}
               colorVariant={p === page ? 'primary' : 'secondary'}
-              onClick={() => goToPage(p)}>
+              onClick={() => goToPage(p)}
+            >
               {p}
             </MyButton>
           ) : (
@@ -97,10 +85,7 @@ export default function MovieList({ perPage = 6 }: MovieListProps) {
           )
         )}
 
-        <Button
-          disabled={page === totalPages}
-          onClick={() => goToPage(page + 1)}
-          variant='outline'>
+        <Button disabled={page === totalPages} onClick={() => goToPage(page + 1)} variant="outline">
           Próxima
         </Button>
       </Flex>
