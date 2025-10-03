@@ -111,7 +111,6 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
 
     movieStore.setFilters(filters)
 
-    // Atualiza URL
     const params: any = {
       sortBy,
       order,

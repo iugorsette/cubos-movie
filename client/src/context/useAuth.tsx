@@ -42,7 +42,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [])
 
-  if (loading) return null // ou um spinner
+  if (loading) return null // implementar spinner
 
   function login(user: User, token: string) {
     setUser(user)

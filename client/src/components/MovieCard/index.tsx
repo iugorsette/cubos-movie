@@ -22,7 +22,6 @@ export default function MovieCard({
   const { isDark } = useTheme()
   const [isHovered, setIsHovered] = useState(false)
 
-  // Função para formatar os gêneros em uma linha
   const formattedGenres = generos?.join(' / ')
   const truncatedGenres =
     formattedGenres && formattedGenres.length > 30
@@ -47,7 +46,6 @@ export default function MovieCard({
         backgroundSize: 'cover',
         backgroundRepeat: 'no-repeat',
         transition: 'transform 0.5s',
-        // transform: isHovered ? 'scale(1.05)' : 'scale(1)',
       }}>
       {/* Gradiente */}
       <div
@@ -55,7 +53,6 @@ export default function MovieCard({
           position: 'absolute',
           bottom: 0,
           width: '100%',
-          // height: '20%',
           background: isDark
             ? 'linear-gradient(to top, rgba(0,0,0,0.8), transparent)'
             : 'linear-gradient(to top, rgba(255,255,255,0.8), transparent)',

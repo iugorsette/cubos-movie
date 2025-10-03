@@ -18,7 +18,6 @@ export default function MovieList({ perPage = 14 }: MovieListProps) {
 
   const totalPages = Math.ceil(total / perPage)
 
-  // Inicializa page a partir da URL
   useEffect(() => {
     const pageParam = Number(searchParams.get('page')) || 1
     setPage(pageParam)
@@ -33,7 +32,6 @@ export default function MovieList({ perPage = 14 }: MovieListProps) {
     })
     const subTotal = movieStore.total$.subscribe(setTotal)
 
-    // Sempre que perPage ou page mudar, busca novamente
     movieStore.setFilters({ take: perPage, skip: (page - 1) * perPage })
 
     return () => {
@@ -45,7 +43,10 @@ export default function MovieList({ perPage = 14 }: MovieListProps) {
   const goToPage = (newPage: number) => {
     if (newPage < 1 || newPage > totalPages) return
     setPage(newPage)
-    setSearchParams({ ...Object.fromEntries([...searchParams]), page: newPage.toString() })
+    setSearchParams({
+      ...Object.fromEntries([...searchParams]),
+      page: newPage.toString(),
+    })
     movieStore.setPage(newPage)
   }
 
