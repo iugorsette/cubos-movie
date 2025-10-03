@@ -1,5 +1,14 @@
 import { useTheme } from '../../context/useTheme'
 
+const classificacaoLabels: Record<string, string> = {
+  LIVRE: 'Livre',
+  DEZ: '10 anos',
+  DOZE: '12 anos',
+  QUATORZE: '14 anos',
+  DEZESSEIS: '16 anos',
+  DEZOITO: '18 anos',
+}
+
 export default function Info({
   label,
   value,
@@ -7,7 +16,7 @@ export default function Info({
 }: {
   label: string
   value?: string | number
-  type?: 'currency' | 'date' | string
+  type?: 'currency' | 'date' | 'duration' | 'ageRange' | string
 }) {
   const { isDark } = useTheme()
   const cardBg = isDark ? 'rgba(35, 34, 37, 0.75)' : '#f3f3f3'
@@ -18,11 +27,13 @@ export default function Info({
 
   if (value !== undefined && value !== null) {
     if (type === 'duration') {
-      displayValue = `${value} min`  
+      displayValue = `${value} min`
     } else if (type === 'currency') {
       displayValue = formatCurrency(value)
     } else if (type === 'date') {
       displayValue = formatDateDDMMYYYY(value.toString())
+    } else if (type === 'ageRange') {
+      displayValue = classificacaoLabels[value.toString()] ?? value.toString()
     } else {
       displayValue = value.toString()
     }
@@ -40,14 +51,7 @@ export default function Info({
         display: 'flex',
         flexDirection: 'column',
       }}>
-      <span
-        style={{
-          color: labelColor,
-          fontSize: 12,
-          // whiteSpace: 'nowrap',
-        }}>
-        {label}
-      </span>
+      <span style={{ color: labelColor, fontSize: 12 }}>{label}</span>
       <span style={{ color: valueColor, marginTop: 4 }}>{displayValue}</span>
     </div>
   )

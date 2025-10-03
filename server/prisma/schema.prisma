@@ -23,23 +23,24 @@ model User {
 }
 
 model Filme {
-  id             String   @id @default(uuid())
-  titulo         String
-  tituloOriginal String?
-  sinopse        String?
-  dataLancamento DateTime
-  duracao        Float?
-  popularidade   Float?
-  votos          Int?
-  idioma         String?
-  orcamento      Float?
-  receita        Float?
-  lucro          Float?
-  generos        String[]
-  capaUrl        String?
-  capaFundo      String?
-  trailerUrl     String?
-  createdBy      String
-  user           User     @relation(fields: [createdBy], references: [id])
-  createdAt      DateTime @default(now())
+  id                      String   @id @default(uuid())
+  titulo                  String
+  tituloOriginal          String?
+  sinopse                 String?
+  dataLancamento          DateTime
+  duracao                 Float?
+  popularidade            Float?
+  votos                   Int?
+  idioma                  String?
+  orcamento               Float?
+  receita                 Float?
+  lucro                   Float?
+  generos                 String[]
+  capaUrl                 String?
+  capaFundo               String?
+  trailerUrl              String?
+  classificacaoIndicativa String?
+  createdBy               String
+  user                    User     @relation(fields: [createdBy], references: [id])
+  createdAt               DateTime @default(now())
 }

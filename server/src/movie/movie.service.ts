@@ -81,6 +81,7 @@ export class MovieService {
         lucro: Number(createMovieDto.lucro) || 0,
         capaUrl,
         capaFundo,
+        classificacaoIndicativa: createMovieDto.classificacaoIndicativa,
         trailerUrl: createMovieDto.trailerUrl,
         user: { connect: { id: userId } },
       },
@@ -121,7 +122,9 @@ export class MovieService {
       },
       {} as any,
     );
-
+    if (updateMovieDto.classificacaoIndicativa) {
+      data.classificacaoIndicativa = updateMovieDto.classificacaoIndicativa;
+    }
     if (capaFile) data.capaUrl = await this.uploadToGCS(capaFile);
     if (capaFundoFile) data.capaFundo = await this.uploadToGCS(capaFundoFile);
 

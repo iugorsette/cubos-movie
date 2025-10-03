@@ -1,4 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
+import { CheckIcon, ChevronDownIcon } from '@radix-ui/react-icons'
+import * as Select from '@radix-ui/react-select'
 import * as Dialog from '@radix-ui/react-dialog'
 import { Flex } from '@radix-ui/themes'
 import MyInput from '../Input'
@@ -6,7 +8,7 @@ import MyButton from '../Button'
 import { createMovie, updateMovie } from '../../services/movies.service'
 import { useTheme } from '../../context/useTheme'
 import { Cross2Icon, PlusIcon } from '@radix-ui/react-icons'
-import type { MovieFormData } from '../../types/movie'
+import { CLASSIFICACAO_INDICATIVA, type MovieFormData } from '../../types/movie'
 
 type MovieModalProps = {
   isOpen: boolean
@@ -40,6 +42,7 @@ export default function MovieModal({
     capaUrl: '',
     capaFundo: '',
     trailerUrl: '',
+    classificacaoIndicativa: CLASSIFICACAO_INDICATIVA[0],
     ...initialData,
   })
 
@@ -59,8 +62,8 @@ export default function MovieModal({
   function addGenero() {
     const g = newGenero.trim()
     if (!g) return
-    if (generos.includes(g)) return // evita duplicados
-    if (generos.length >= 10) return // limite de 10
+    if (generos.includes(g)) return
+    if (generos.length >= 10) return
     setGeneros([...generos, g])
     setNewGenero('')
   }
@@ -266,6 +269,81 @@ export default function MovieModal({
                   value={form.duracao}
                   onChange={(e) => handleChange('duracao', e.target.value)}
                 />
+                <Select.Root
+                  value={form.classificacaoIndicativa}
+                  onValueChange={(value) =>
+                    handleChange('classificacaoIndicativa', value)
+                  }>
+                  <Select.Trigger
+                    aria-label='Classificação Indicativa'
+                    style={{
+                      all: 'unset',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      padding: '0 10px',
+                      fontSize: 13,
+                      lineHeight: 1,
+                      height: 35,
+                      backgroundColor: isDark ? '#222' : '#fff',
+                      color: isDark ? '#fff' : '#000',
+                      borderRadius: 4,
+                      border: '1px solid #ccc',
+                      width: '100%',
+                    }}>
+                    <Select.Value placeholder='Selecione...' />
+                    <Select.Icon>
+                      <ChevronDownIcon />
+                    </Select.Icon>
+                  </Select.Trigger>
+
+                  <Select.Content
+                    style={{
+                      overflow: 'hidden',
+                      backgroundColor: isDark ? '#333' : '#fff',
+                      borderRadius: 6,
+                      border: '1px solid #ccc',
+                      zIndex: 1000,
+                    }}>
+                    <Select.Viewport>
+                      {[
+                        'LIVRE',
+                        'DEZ',
+                        'DOZE',
+                        'CATORZE',
+                        'DEZESSEIS',
+                        'DEZOITO',
+                      ].map((val) => (
+                        <Select.Item
+                          key={val}
+                          value={val}
+                          style={{
+                            padding: '5px 10px',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                          }}>
+                          <Select.ItemText>
+                            {
+                              {
+                                LIVRE: 'Livre',
+                                DEZ: '10 anos',
+                                DOZE: '12 anos',
+                                CATORZE: '14 anos',
+                                DEZESSEIS: '16 anos',
+                                DEZOITO: '18 anos',
+                              }[val]
+                            }
+                          </Select.ItemText>
+                          <Select.ItemIndicator>
+                            <CheckIcon />
+                          </Select.ItemIndicator>
+                        </Select.Item>
+                      ))}
+                    </Select.Viewport>
+                  </Select.Content>
+                </Select.Root>
+
                 <div style={{ marginBottom: 12, width: '100%' }}>
                   <strong>Gêneros:</strong>
                   <div
@@ -391,7 +469,7 @@ export default function MovieModal({
           </div>
           <Flex justify='end' style={{ marginTop: 10, gap: 5 }}>
             <Dialog.Close asChild>
-              <MyButton type='button' variant='secondary'>
+              <MyButton type='button' colorVariant='secondary'>
                 Cancelar
               </MyButton>
             </Dialog.Close>

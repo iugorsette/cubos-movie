@@ -5,6 +5,7 @@ import { useTheme } from '../../context/useTheme'
 export type MyInputProps = InputHTMLAttributes<HTMLInputElement> & {
   label?: string
   showLabel?: boolean
+  as?: 'input' | 'select'
   error?: string | null
   icon?: ReactNode
   type?:

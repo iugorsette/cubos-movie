@@ -64,4 +64,6 @@ export class CreateMovieDto {
   @IsUrl()
   @IsOptional()
   trailerUrl?: string;
+
+  classificacaoIndicativa;
 }

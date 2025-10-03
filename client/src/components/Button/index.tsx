@@ -35,7 +35,6 @@ export default function MyButton({
   const sharedProps = {
     ...props,
     variant,
-    colorVariant,
     style: {
       ...(variant === 'solid' && { backgroundColor: current.default, color: current.color }),
       cursor: props.disabled ? 'not-allowed' : 'pointer',
