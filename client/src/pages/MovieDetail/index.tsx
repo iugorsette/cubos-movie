@@ -70,16 +70,15 @@ export default function MovieDetail() {
             zIndex: 1,
             width: '100%',
             justifyContent: 'space-between',
+            alignItems: 'center',
             flexWrap: 'wrap',
           }}>
           <Flex direction='column' style={{ minWidth: '250px' }}>
-            <Text size='8'>{movie.titulo}</Text>
-            <Text size='3' style={{ marginBottom: '16px' }}>
-              Título original: {movie.tituloOriginal}
-            </Text>
+            <Text size='7'>{movie.titulo}</Text>
+            <Text size='3'>Título original: {movie.tituloOriginal}</Text>
           </Flex>
 
-          <Flex gap='3' style={{ marginTop: '24px', flexWrap: 'wrap' }}>
+          <Flex gap='3' style={{ flexWrap: 'wrap' }}>
             <MyButton
               colorVariant='secondary'
               disabled={!isOwner}
@@ -138,7 +137,15 @@ export default function MovieDetail() {
               zIndex: 1,
             }}>
             <Flex direction='column' gap='8'>
-              <Text size='5'>Frase de impacto</Text>
+              <Text
+                size='4'
+                style={{
+                  margin: ' 0 24px',
+                  fontFamily: 'Montserrat',
+                  fontWeight: 400,
+                }}>
+                {movie.subtitulo}
+              </Text>
               <Info label='SINOPSE' value={movie.sinopse} />
             </Flex>
             <GenerosChips generos={movie.generos} />
@@ -163,7 +170,6 @@ export default function MovieDetail() {
                 value={movie.classificacaoIndicativa}
                 type='ageRange'
               />
-              {/* Livre, 10 anos, 12 anos, 14 anos, 16 anos e 18 anos */}
               <Info label='VOTOS' value={movie.votos?.toString()} />
               <PopularidadeRatio popularidade={movie.popularidade || 0} />
               <Info

@@ -11,7 +11,8 @@ export type ClassificacaoIndicativa = (typeof CLASSIFICACAO_INDICATIVA)[number]
 export interface MovieBase {
   id?: string
   titulo: string
-  tituloOriginal?: string
+  tituloOriginal?: string  
+  subtitulo: string, 
   sinopse?: string
   dataLancamento: string
   duracao: string

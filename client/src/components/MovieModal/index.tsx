@@ -29,6 +29,7 @@ export default function MovieModal({
   const [form, setForm] = useState<MovieFormData>({
     titulo: '',
     tituloOriginal: '',
+    subtitulo: '',
     sinopse: '',
     dataLancamento: '',
     duracao: '',
@@ -247,6 +248,14 @@ export default function MovieModal({
                   value={form.tituloOriginal}
                   onChange={(e) =>
                     handleChange('tituloOriginal', e.target.value)
+                  }
+                />
+                <MyInput
+                  label='Subtítulo'
+                  placeholder='Digite um subtítulo ou frase'
+                  value={form.subtitulo}
+                  onChange={(e) =>
+                    setForm({ ...form, subtitulo: e.target.value })
                   }
                 />
                 <MyInput

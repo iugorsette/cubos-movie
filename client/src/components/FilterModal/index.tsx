@@ -16,7 +16,7 @@ import MyInput from '../Input'
 import Slider from 'rc-slider'
 import 'rc-slider/assets/index.css'
 import { useSearchParams } from 'react-router-dom'
-
+import './index.css'
 type FilterModalProps = {
   isOpen: boolean
   onClose: () => void
@@ -123,7 +123,7 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
             backgroundColor: isDark
               ? 'rgba(35, 34, 37, 1)'
               : 'rgba(255,255,255,0.9)',
-            padding: '4px 24px ',
+            padding: '4px 24px',
             width: '40vw',
             height: '55vh',
             position: 'fixed',
@@ -134,7 +134,8 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
             display: 'flex',
             flexDirection: 'column',
             boxShadow: '0px 10px 30px rgba(0,0,0,0.2)',
-          }}>
+          }}
+          className='filter-modal'>
           <Flex justify='between' align='center' mb='2'>
             <Dialog.Title style={{ fontSize: 20 }}>Filtros</Dialog.Title>
             <Dialog.Close asChild>
@@ -342,7 +343,13 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
                 Classificação indicativa:
               </strong>
 
-              <div style={{ display: 'flex', flexDirection: 'row', gap: 6 }}>
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  gap: 12,
+                  flexWrap: 'wrap',
+                }}>
                 {classificacoesIndicativas.map((item) => (
                   <label
                     key={item.value}

@@ -70,9 +70,18 @@ function formatDateDDMMYYYY(dateString: string) {
 function formatCurrency(value: string | number) {
   const number = typeof value === 'number' ? value : Number(value)
   if (isNaN(number)) return '-'
-  return number.toLocaleString('pt-BR', {
-    style: 'currency',
-    currency: 'BRL',
-    minimumFractionDigits: 2,
-  })
+
+  const abs = Math.abs(number)
+
+  if (abs >= 1_000_000_000_000) {
+    return `${(number / 1_000_000_000_000).toFixed(1)}T`
+  } else if (abs >= 1_000_000_000) {
+    return `${(number / 1_000_000_000).toFixed(1)}B`
+  } else if (abs >= 1_000_000) {
+    return `${(number / 1_000_000).toFixed(1)}M`
+  } else if (abs >= 1_000) {
+    return `${(number / 1_000).toFixed(1)}K`
+  } else {
+    return number.toString()
+  }
 }

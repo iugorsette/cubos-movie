@@ -26,6 +26,7 @@ model Filme {
   id                      String   @id @default(uuid())
   titulo                  String
   tituloOriginal          String?
+  subtitulo               String?
   sinopse                 String?
   dataLancamento          DateTime
   duracao                 Float?

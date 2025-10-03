@@ -69,6 +69,7 @@ export class MovieService {
       data: {
         titulo: createMovieDto.titulo,
         tituloOriginal: createMovieDto.tituloOriginal,
+        subtitulo: createMovieDto.subtitulo,
         sinopse: createMovieDto.sinopse,
         dataLancamento,
         duracao: Number(createMovieDto.duracao),
