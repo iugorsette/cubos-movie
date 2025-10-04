@@ -5,11 +5,15 @@ import * as Dialog from '@radix-ui/react-dialog'
 import { Flex } from '@radix-ui/themes'
 import MyInput from '../Input'
 import MyButton from '../Button'
-import { createMovie, updateMovie } from '../../services/movies.service'
 import { useTheme } from '../../hooks/useTheme'
 import { Cross2Icon, PlusIcon } from '@radix-ui/react-icons'
-import { CLASSIFICACAO_INDICATIVA, type MovieFormData } from '../../types/movie'
+import {
+  CLASSIFICACAO_INDICATIVA,
+  type MovieBase,
+  type MovieFormData,
+} from '../../types/movie'
 import './index.css'
+import { movieStore } from '../../stores/movie.store'
 type MovieModalProps = {
   isOpen: boolean
   onClose: () => void
@@ -98,7 +102,31 @@ export default function MovieModal({
     e.preventDefault()
     setError(null)
     setLoading(true)
+    const requiredFields: { field: keyof MovieFormData; label: string }[] = [
+      { field: 'titulo', label: 'Título' },
+      { field: 'dataLancamento', label: 'Data de Lançamento' },
+      { field: 'duracao', label: 'Duração' },
+      { field: 'classificacaoIndicativa', label: 'Classificação Indicativa' },
+    ]
+    for (const { field, label } of requiredFields) {
+      const value = form[field]
+      if (
+        value === undefined ||
+        value === null ||
+        (typeof value === 'string' && !value.trim())
+      ) {
+        setError(`${label} é obrigatório`)
+        return
+      }
+    }
 
+    // Validar data
+    if (isNaN(new Date(form.dataLancamento).getTime())) {
+      setError('Data de Lançamento inválida')
+      return
+    }
+
+    setLoading(true)
     try {
       form.generos = generos
       const formData = new FormData()
@@ -114,9 +142,12 @@ export default function MovieModal({
       if (capaFundoFile) formData.append('capaFundoFile', capaFundoFile)
 
       if (initialData?.id) {
-        await updateMovie(initialData.id, formData)
+        await movieStore.updateMovie(
+          initialData.id,
+          formData as unknown as MovieBase
+        )
       } else {
-        await createMovie(formData)
+        await movieStore.addMovie(formData as unknown as MovieBase)
       }
 
       onSaved()

@@ -47,7 +47,6 @@ export default function MovieCard({
         backgroundRepeat: 'no-repeat',
         transition: 'transform 0.5s',
       }}>
-      {/* Gradiente */}
       <div
         style={{
           position: 'absolute',
@@ -61,7 +60,6 @@ export default function MovieCard({
         }}
       />
 
-      {/* Título */}
       <p
         style={{
           position: 'absolute',
@@ -91,12 +89,10 @@ export default function MovieCard({
             padding: '8px 12px',
             transition: 'all 0.3s',
           }}>
-          {/* Aqui você pode renderizar o seu componente de popularidade */}
           <PopularidadeRatio popularidade={popularidade} />
         </div>
       )}
 
-      {/* Gêneros */}
       {isHovered && generos && (
         <p
           style={{
