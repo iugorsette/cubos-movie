@@ -18,6 +18,7 @@ function getEmbedUrl(url: string): string {
 }
 
 export default function TrailerFrame({ trailerUrl }: { trailerUrl: string }) {
+  const height = window.innerWidth <= 480 ? '100%' : '65%'
   return (
     <div style={{ padding: '20px 30px' }}>
       <h2 style={{ marginBottom: '16px' }}>Trailer</h2>
@@ -38,7 +39,7 @@ export default function TrailerFrame({ trailerUrl }: { trailerUrl: string }) {
             top: 0,
             left: 0,
             width: '100%',
-            height: '65%',
+            height: height,
           }}></iframe>
       </div>
     </div>
