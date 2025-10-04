@@ -57,7 +57,14 @@ export default function MovieList() {
 
   return (
     <div>
-      <Flex wrap='wrap' gap='3' justify='start'>
+      <Flex
+        style={{
+          backgroundColor: 'rgba(235, 234, 248, 0.08)',
+          padding: 24,
+        }}
+        wrap='wrap'
+        gap='4'
+        justify='center'>
         <ListState
           loading={movieStore.getLoading()}
           emptyMessage='Nenhum filme encontrado'>

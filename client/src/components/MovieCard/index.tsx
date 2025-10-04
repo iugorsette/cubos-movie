@@ -36,7 +36,7 @@ export default function MovieCard({
       style={{
         width: 235,
         height: 355,
-        borderRadius: 8,
+        borderRadius: 4,
         cursor: 'pointer',
         position: 'relative',
         overflow: 'hidden',

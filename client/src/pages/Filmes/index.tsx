@@ -13,42 +13,37 @@ export default function Filmes() {
   const [filtersOpen, setFiltersOpen] = useState(false)
   const [token] = useState(localStorage.getItem('token') || '')
 
-
   function handleAddMovie() {
     setModalOpen(true)
   }
 
   return (
     <Flex direction='column' style={{ padding: '24px', gap: '24px' }}>
-      <Flex align='center' justify='between' gap='3'>
+      <Flex align='center' justify='end' gap='3'>
         <MyInput
-          style={{ maxWidth: '300px' }}
-          placeholder='Pesquisar filmes...'
+          placeholder='Pesquise por filmes...'
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           icon={<MagnifyingGlassIcon />}
         />
 
-        <Flex gap='2' ml='4' style={{ padding: '0 36px' }}>
-          <MyButton colorVariant='secondary' onClick={() => setFiltersOpen(true)}>
-            Filtros
-          </MyButton>
+        <MyButton colorVariant='secondary' onClick={() => setFiltersOpen(true)}>
+          Filtros
+        </MyButton>
 
-          {/* Renderiza o modal apenas se aberto */}
-          {filtersOpen && (
-            <FilterModal
-              isOpen={filtersOpen}
-              onClose={() => setFiltersOpen(false)}
-            />
-          )}
+        {filtersOpen && (
+          <FilterModal
+            isOpen={filtersOpen}
+            onClose={() => setFiltersOpen(false)}
+          />
+        )}
 
-          <MyButton colorVariant='primary' onClick={handleAddMovie}>
-            Adicionar Filme
-          </MyButton>
-        </Flex>
+        <MyButton colorVariant='primary' onClick={handleAddMovie}>
+          Adicionar Filme
+        </MyButton>
       </Flex>
 
-      <MovieList/>
+      <MovieList />
 
       <MovieModal
         isOpen={modalOpen}

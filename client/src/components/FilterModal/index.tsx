@@ -96,7 +96,7 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
     setSearchParams({})
     onClose()
   }
-  const DEFAULT_TAKE = 14
+  const DEFAULT_TAKE = 10
 
   function applyFilters() {
     const filters = {
