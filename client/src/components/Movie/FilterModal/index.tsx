@@ -194,6 +194,30 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
                 onChange={(val) =>
                   setDuration({ min: val[0] as number, max: val[1] as number })
                 }
+                trackStyle={[
+                  {
+                    backgroundColor: isDark ? '#8457AA' : '#8E4EC6',
+                    height: 8,
+                  },
+                ]}
+                railStyle={{
+                  backgroundColor: isDark ? '#444' : '#ccc',
+                  height: 8,
+                }}
+                handleStyle={[
+                  {
+                    borderColor: isDark ? '#8457AA' : '#8E4EC6',
+                    backgroundColor: 'white',
+                    height: 20,
+                    width: 20,
+                  },
+                  {
+                    borderColor: isDark ? '#8457AA' : '#8E4EC6',
+                    backgroundColor: 'white',
+                    height: 20,
+                    width: 20,
+                  },
+                ]}
               />
               <Flex justify='between' style={{ marginTop: 8 }}>
                 <span>{duration.min} min</span>
