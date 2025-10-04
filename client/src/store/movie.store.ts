@@ -1,11 +1,6 @@
 import { BehaviorSubject } from 'rxjs'
 import type { Movie, ClassificacaoIndicativa } from '../types/movie'
-import {
-  getMovies,
-  createMovie,
-  updateMovie,
-  deleteMovie,
-} from './movies.service'
+import { getMovies, createMovie, updateMovie, deleteMovie } from './../services/movies.service'
 
 type MovieFilters = {
   search?: string
@@ -28,17 +23,32 @@ class MovieStore {
   private totalSubject = new BehaviorSubject<number>(0)
   public total$ = this.totalSubject.asObservable()
 
-  private filters: MovieFilters = { take: 5, skip: 0 }
+  private filters: MovieFilters = { take: 10, skip: 0 }
+  private loading = false
 
   setFilters(filters: MovieFilters) {
     this.filters = { ...this.filters, ...filters }
     this.fetchMovies()
   }
 
+  setPage(page: number) {
+    const take = this.filters.take ?? 10
+    this.filters.skip = (page - 1) * take
+    this.fetchMovies()
+  }
+
   async fetchMovies() {
-    const data = await getMovies(this.filters)
-    this.moviesSubject.next(data.movies)
-    this.totalSubject.next(data.total)
+    if (this.loading) return
+    this.loading = true
+    try {
+      const data = await getMovies(this.filters)
+      this.moviesSubject.next(data.movies)
+      this.totalSubject.next(data.total)
+    } catch (err) {
+      console.error('Erro ao buscar filmes:', err)
+    } finally {
+      this.loading = false
+    }
   }
 
   async addMovie(movie: Movie, token: string) {
@@ -58,11 +68,6 @@ class MovieStore {
     await this.fetchMovies()
   }
 
-  setPage(page: number) {
-    this.filters.skip = (page - 1) * (this.filters.take ?? 14)
-    this.fetchMovies()
-  }
-  
   getFilters() {
     return { ...this.filters }
   }

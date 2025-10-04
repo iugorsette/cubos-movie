@@ -10,7 +10,7 @@ import {
   ChevronDownIcon,
   ChevronUpIcon,
 } from '@radix-ui/react-icons'
-import { movieStore } from '../../services/movie.store'
+import { movieStore } from '../../store/movie.store'
 import { useTheme } from '../../hooks/useTheme'
 import MyInput from '../Input'
 import Slider from 'rc-slider'

@@ -1,11 +1,10 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Flex } from '@radix-ui/themes'
 import MyInput from '../../components/Input'
 import MyButton from '../../components/Button'
 import { MagnifyingGlassIcon } from '@radix-ui/react-icons'
 import MovieList from '../../components/MovieList'
 import MovieModal from '../../components/MovieModal'
-import { movieStore } from '../../services/movie.store'
 import FilterModal from '../../components/FilterModal'
 
 export default function Filmes() {
@@ -14,9 +13,6 @@ export default function Filmes() {
   const [filtersOpen, setFiltersOpen] = useState(false)
   const [token] = useState(localStorage.getItem('token') || '')
 
-  useEffect(() => {
-    movieStore.fetchMovies()
-  }, [])
 
   function handleAddMovie() {
     setModalOpen(true)

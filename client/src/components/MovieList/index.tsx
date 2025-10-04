@@ -3,19 +3,16 @@ import { Flex, Button } from '@radix-ui/themes'
 import MovieCard from '../MovieCard'
 import MyButton from '../Button'
 import type { Movie } from '../../types/movie'
-import { movieStore } from '../../services/movie.store'
+import { movieStore } from '../../store/movie.store'
 import { useSearchParams } from 'react-router-dom'
 
-type MovieListProps = { perPage?: number }
-
-export default function MovieList({ perPage = 14 }: MovieListProps) {
+export default function MovieList() {
   const [movies, setMovies] = useState<Movie[]>([])
   const [total, setTotal] = useState(0)
   const [page, setPage] = useState(1)
-  const [loading, setLoading] = useState(true)
+  const perPage = 10
 
   const [searchParams, setSearchParams] = useSearchParams()
-
   const totalPages = Math.ceil(total / perPage)
 
   useEffect(() => {
@@ -25,20 +22,14 @@ export default function MovieList({ perPage = 14 }: MovieListProps) {
   }, [])
 
   useEffect(() => {
-    setLoading(true)
-    const subMovies = movieStore.movies$.subscribe((data) => {
-      setMovies(data)
-      setLoading(false)
-    })
+    const subMovies = movieStore.movies$.subscribe(setMovies)
     const subTotal = movieStore.total$.subscribe(setTotal)
-
-    movieStore.setFilters({ take: perPage, skip: (page - 1) * perPage })
 
     return () => {
       subMovies.unsubscribe()
       subTotal.unsubscribe()
     }
-  }, [perPage, page])
+  }, [])
 
   const goToPage = (newPage: number) => {
     if (newPage < 1 || newPage > totalPages) return
@@ -66,10 +57,8 @@ export default function MovieList({ perPage = 14 }: MovieListProps) {
   return (
     <div>
       <Flex wrap='wrap' gap='3' justify='start'>
-        {loading ? (
-          <p>Carregando...</p>
-        ) : movies.length === 0 ? (
-          <p>Nenhum filme encontrado</p>
+        {movies.length === 0 ? (
+          <p>Carregando ou nenhum filme encontrado...</p>
         ) : (
           movies.map((movie) => (
             <MovieCard
