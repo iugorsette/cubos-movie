@@ -6,6 +6,7 @@ import BackGround from './assets/BACKGROUND.png'
 import { AuthProvider } from './hooks/useAuth'
 import { BrowserRouter } from 'react-router-dom'
 import { useTheme } from './hooks/useTheme'
+import BackgroundWithGradient from './components/Background'
 function AppContent() {
   const { isDark } = useTheme()
 
@@ -19,20 +20,10 @@ function AppContent() {
       className='inter'>
       <AuthProvider>
         <BrowserRouter>
-          <Header />
-          <img
-            src={BackGround}
-            alt='Background'
-            style={{
-              width: '100%',
-              opacity: 0.1,
-              height: '50vh',
-              objectFit: 'cover',
-              position: 'absolute',
-              zIndex: -1,
-            }}
-          />
-          <AppRoutes />
+          <BackgroundWithGradient imageUrl={BackGround}>
+            <Header />
+            <AppRoutes />
+          </BackgroundWithGradient>
         </BrowserRouter>
       </AuthProvider>
     </Theme>
