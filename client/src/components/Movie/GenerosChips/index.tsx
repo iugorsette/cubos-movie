@@ -1,11 +1,11 @@
-import { useTheme } from "../../../hooks/useTheme"
+import { useTheme } from '../../../hooks/useTheme'
 
 export default function GenerosChips({ generos }: { generos: string[] }) {
   const { isDark } = useTheme()
   const genreBg = isDark ? 'rgba(193, 80, 255, 0.18)' : '#8E4EC6'
   const cardBg = isDark ? 'rgba(35, 34, 37, 0.75)' : '#f3f3f3'
   const labelColor = isDark ? '#B5B2BC' : '#555'
-  
+
   const valueColor = isDark ? '#eee' : '#111'
   return (
     <div
@@ -24,7 +24,7 @@ export default function GenerosChips({ generos }: { generos: string[] }) {
           fontFamily: "'Montserrat'",
           color: labelColor,
           fontSize: 16,
-      marginBottom: '8px',
+          marginBottom: '8px',
         }}>
         Gêneros
       </strong>
@@ -39,6 +39,7 @@ export default function GenerosChips({ generos }: { generos: string[] }) {
               key={genero}
               style={{
                 background: genreBg,
+                borderRadius: '2px',
                 padding: '8px',
                 marginRight: '8px',
                 fontSize: '0.85rem',

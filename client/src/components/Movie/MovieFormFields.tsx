@@ -202,6 +202,7 @@ export default function MovieFormFields({
                   display: 'flex',
                   alignItems: 'center',
                   padding: '4px 12px',
+                  borderRadius:'2px',
                   backgroundColor: '#8E4EC6',
                   color: '#fff',
                 }}>

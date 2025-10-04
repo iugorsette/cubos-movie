@@ -33,6 +33,7 @@ export default function MovieDetail() {
     }
   }
   const isOwner = user?.id === movie?.createdBy
+  const isMobile = window.innerWidth <= 480
 
   useEffect(() => {
     if (id) fetchMovie()
@@ -61,9 +62,9 @@ export default function MovieDetail() {
           backgroundImage: `url(${movie.capaFundo})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
-          padding: '40px 60px',
+          padding: isMobile ? '15px' : '40px 60px',
           display: 'flex',
-          flexDirection: 'column',
+          flexDirection:  'column',
           gap: '32px',
           position: 'relative',
         }}>
