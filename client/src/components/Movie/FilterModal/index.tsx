@@ -3,21 +3,21 @@ import * as Dialog from '@radix-ui/react-dialog'
 import * as Select from '@radix-ui/react-select'
 import * as Checkbox from '@radix-ui/react-checkbox'
 import { Flex } from '@radix-ui/themes'
-import MyButton from '../Button'
+import MyButton from '../../Button'
 import {
   Cross2Icon,
   CheckIcon,
   ChevronDownIcon,
   ChevronUpIcon,
 } from '@radix-ui/react-icons'
-import { useTheme } from '../../hooks/useTheme'
-import MyInput from '../Input'
+import { useTheme } from '../../../hooks/useTheme'
+import MyInput from '../../Input'
 import Slider from 'rc-slider'
 import 'rc-slider/assets/index.css'
 import { useSearchParams } from 'react-router-dom'
 import './index.css'
-import type { ClassificacaoIndicativa } from '../../types/movie'
-import { movieStore } from '../../stores/movie.store'
+import type { ClassificacaoIndicativa } from '../../../types/movie'
+import { movieStore } from '../../../stores/movie.store'
 type FilterModalProps = {
   isOpen: boolean
   onClose: () => void
@@ -87,14 +87,7 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
     setDuration({ min: 0, max: 300 })
     setDateRange({ start: '', end: '' })
     setClassificacoes([])
-
-    const filters: any = {
-      sortBy: 'titulo',
-      order: 'asc',
-      skip: 0,
-      take: DEFAULT_TAKE,
-    }
-    movieStore.setFilters(filters)
+    movieStore.clearFilters()
     setSearchParams({})
     onClose()
   }

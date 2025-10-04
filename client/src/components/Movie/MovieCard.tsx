@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTheme } from '../../hooks/useTheme'
-import PopularidadeRatio from '../PopularidadeRatio'
+import PopularidadeRatio from '../Movie/PopularidadeRatio'
 
 type MovieCardProps = {
   id: string

@@ -1,6 +1,11 @@
 import { BehaviorSubject } from 'rxjs'
 import type { Movie, ClassificacaoIndicativa } from '../types/movie'
-import { createMovie, deleteMovie, getMovies, updateMovie } from '../services/movies.service'
+import {
+  createMovie,
+  deleteMovie,
+  getMovies,
+  updateMovie,
+} from '../services/movies.service'
 
 type MovieFilters = {
   search?: string
@@ -25,6 +30,10 @@ class MovieStore {
 
   private filters: MovieFilters = { take: 10, skip: 0 }
 
+  clearFilters() {
+    this.filters = { take: 10, skip: 0 }
+    this.fetchMovies()
+  }
   setFilters(filters: MovieFilters) {
     this.filters = { ...this.filters, ...filters }
     this.fetchMovies()
@@ -57,7 +66,7 @@ class MovieStore {
     this.filters.skip = (page - 1) * (this.filters.take ?? 10)
     this.fetchMovies()
   }
-  
+
   getFilters() {
     return { ...this.filters }
   }

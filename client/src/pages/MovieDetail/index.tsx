@@ -4,12 +4,12 @@ import { Flex, Text } from '@radix-ui/themes'
 import { deleteMovie, getMovieById } from '../../services/movies.service'
 import type { Movie } from '../../types/movie'
 import { useTheme } from '../../hooks/useTheme'
-import MovieModal from '../../components/MovieModal'
+import MovieModal from '../../components/Movie/MovieModal'
 import { useAuth } from '../../hooks/useAuth'
-import PopularidadeRatio from '../../components/PopularidadeRatio'
-import TrailerFrame from '../../components/TrailerFrame'
-import GenerosChips from '../../components/GenerosChips'
-import Info from '../../components/Info'
+import PopularidadeRatio from '../../components/Movie/PopularidadeRatio'
+import TrailerFrame from '../../components/Movie/TrailerFrame'
+import GenerosChips from '../../components/Movie/GenerosChips'
+import Info from '../../components/Movie/Info'
 import MyButton from '../../components/Button'
 import { ConfirmDeleteModal } from '../../components/ConfirmDeleteModal'
 
@@ -210,7 +210,6 @@ export default function MovieDetail() {
         isOpen={editOpen}
         onClose={() => setEditOpen(false)}
         initialData={movie}
-        token={token as string}
         onSaved={fetchMovie}
       />
     </div>

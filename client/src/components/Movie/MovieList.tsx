@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Flex, Button } from '@radix-ui/themes'
-import MovieCard from '../MovieCard'
+import MovieCard from '../Movie/MovieCard'
 import MyButton from '../Button'
 import type { Movie } from '../../types/movie'
 import { useSearchParams } from 'react-router-dom'
