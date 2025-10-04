@@ -6,12 +6,13 @@ import { MagnifyingGlassIcon } from '@radix-ui/react-icons'
 import MovieList from '../../components/MovieList'
 import MovieModal from '../../components/MovieModal'
 import FilterModal from '../../components/FilterModal'
-import { movieStore } from '../../store/movie.store'
 import { BehaviorSubject, debounceTime, distinctUntilChanged } from 'rxjs'
+import { useMovieStore } from '../../stores/movie.store'
 
 const searchSubject = new BehaviorSubject<string>('')
 
 export default function Filmes() {
+  const movieStore = useMovieStore()
   const [search, setSearch] = useState('')
   const [modalOpen, setModalOpen] = useState(false)
   const [filtersOpen, setFiltersOpen] = useState(false)

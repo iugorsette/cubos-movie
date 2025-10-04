@@ -10,7 +10,6 @@ import {
   ChevronDownIcon,
   ChevronUpIcon,
 } from '@radix-ui/react-icons'
-import { movieStore } from '../../store/movie.store'
 import { useTheme } from '../../hooks/useTheme'
 import MyInput from '../Input'
 import Slider from 'rc-slider'
@@ -18,6 +17,7 @@ import 'rc-slider/assets/index.css'
 import { useSearchParams } from 'react-router-dom'
 import './index.css'
 import type { ClassificacaoIndicativa } from '../../types/movie'
+import { useMovieStore } from '../../stores/movie.store'
 type FilterModalProps = {
   isOpen: boolean
   onClose: () => void
@@ -39,6 +39,7 @@ const classificacoesIndicativas: {
 ]
 
 export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
+  const movieStore = useMovieStore()
   const { isDark } = useTheme()
   const [classificacoes, setClassificacoes] = useState<
     ClassificacaoIndicativa[]

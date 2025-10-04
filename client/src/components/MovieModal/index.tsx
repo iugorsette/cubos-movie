@@ -22,7 +22,6 @@ export default function MovieModal({
   isOpen,
   onClose,
   initialData,
-  token,
   onSaved,
 }: MovieModalProps) {
   const { isDark } = useTheme()
@@ -115,9 +114,9 @@ export default function MovieModal({
       if (capaFundoFile) formData.append('capaFundoFile', capaFundoFile)
 
       if (initialData?.id) {
-        await updateMovie(initialData.id, formData, token)
+        await updateMovie(initialData.id, formData)
       } else {
-        await createMovie(formData, token)
+        await createMovie(formData)
       }
 
       onSaved()

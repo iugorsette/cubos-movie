@@ -25,7 +25,7 @@ export default function MovieDetail() {
   const handleDelete = async () => {
     if (!id || !token) return
     try {
-      await deleteMovie(id, token)
+      await deleteMovie(id)
       navigate('/')
     } catch (err) {
       console.error('Erro ao deletar filme:', err)

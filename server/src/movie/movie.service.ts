@@ -168,48 +168,30 @@ export class MovieService {
       data: movies,
     });
   }
+
   async create(
-    createMovieDto: CreateMovieDto,
+    dto: CreateMovieDto,
     userId: string,
     capaFile?: Express.Multer.File,
     capaFundoFile?: Express.Multer.File,
   ) {
-    const userExists = await this.prisma.user.findUnique({
-      where: { id: userId },
-    });
-
-    if (!userExists) {
-      throw new BadRequestException('Usuário não encontrado no banco de dados');
-    }
-
     const capaUrl = capaFile ? await this.uploadToGCS(capaFile) : undefined;
     const capaFundo = capaFundoFile
       ? await this.uploadToGCS(capaFundoFile)
       : undefined;
 
-    const dataLancamento = createMovieDto.dataLancamento
-      ? new Date(createMovieDto.dataLancamento)
-      : '0000-00-00';
-
     return this.prisma.filme.create({
       data: {
-        titulo: createMovieDto.titulo,
-        tituloOriginal: createMovieDto.tituloOriginal,
-        subtitulo: createMovieDto.subtitulo,
-        sinopse: createMovieDto.sinopse,
-        dataLancamento,
-        duracao: Number(createMovieDto.duracao),
-        generos: createMovieDto.generos,
-        idioma: createMovieDto.idioma,
-        popularidade: Number(createMovieDto.popularidade) || 0,
-        votos: Number(createMovieDto.votos) || 0,
-        orcamento: Number(createMovieDto.orcamento) || 0,
-        receita: Number(createMovieDto.receita) || 0,
-        lucro: Number(createMovieDto.lucro) || 0,
+        ...dto,
+        duracao: Number(dto.duracao) || 0,
+        popularidade: Number(dto.popularidade) || 0,
+        votos: Number(dto.votos) || 0,
+        orcamento: Number(dto.orcamento) || 0,
+        receita: Number(dto.receita) || 0,
+        lucro: Number(dto.lucro) || 0,
+        dataLancamento: new Date(dto.dataLancamento),
         capaUrl,
         capaFundo,
-        classificacaoIndicativa: createMovieDto.classificacaoIndicativa,
-        trailerUrl: createMovieDto.trailerUrl,
         user: { connect: { id: userId } },
       },
       include: { user: true },
@@ -218,40 +200,36 @@ export class MovieService {
 
   async update(
     id: string,
-    updateMovieDto: Partial<UpdateMovieDto>,
+    dto: Partial<UpdateMovieDto>,
     capaFile?: Express.Multer.File,
     capaFundoFile?: Express.Multer.File,
   ) {
+    const data: Partial<UpdateMovieDto> = {};
+
+    // Campos numéricos devem ser convertidos
     const numericFields = [
+      'duracao',
       'popularidade',
       'votos',
       'orcamento',
       'receita',
       'lucro',
-      'duracao',
     ];
 
-    const data: any = Object.entries(updateMovieDto).reduce(
-      (acc, [key, value]) => {
-        if (value === undefined || value === null) return acc;
+    for (const key of Object.keys(dto)) {
+      const value = dto[key as keyof typeof dto];
+      if (value === undefined || value === null) continue;
 
-        if (['id', 'createdBy', 'createdAt', 'user'].includes(key)) return acc;
-
-        if (numericFields.includes(key)) {
-          acc[key] = Number(value);
-        } else if (key === 'dataLancamento') {
-          acc[key] = new Date(value as string);
-        } else {
-          acc[key] = value;
-        }
-
-        return acc;
-      },
-      {} as any,
-    );
-    if (updateMovieDto.classificacaoIndicativa) {
-      data.classificacaoIndicativa = updateMovieDto.classificacaoIndicativa;
+      if (numericFields.includes(key)) {
+        data[key] = Number(value);
+      } else if (key === 'dataLancamento') {
+        data[key] = new Date(value as string);
+      } else if (!['id', 'createdBy', 'createdAt', 'user'].includes(key)) {
+        data[key] = value;
+      }
     }
+
+    // Arquivos
     if (capaFile) data.capaUrl = await this.uploadToGCS(capaFile);
     if (capaFundoFile) data.capaFundo = await this.uploadToGCS(capaFundoFile);
 
@@ -261,97 +239,7 @@ export class MovieService {
     });
   }
 
-  async findAllWithCount(params: {
-    skip?: number;
-    take?: number;
-    search?: string;
-    generos?: string[];
-    classificacoesIndicativas?: string[];
-    sortBy?: 'titulo' | 'dataLancamento' | 'popularidade' | 'createdAt';
-    order?: 'asc' | 'desc';
-    minDuration?: number;
-    maxDuration?: number;
-    startDate?: string;
-    endDate?: string;
-  }) {
-    const {
-      skip = 0,
-      take = 10,
-      sortBy = 'createdAt',
-      order = 'desc',
-      ...filters
-    } = params;
-
-    const where = this.buildWhere(filters);
-    const [movies, total] = await Promise.all([
-      this.prisma.filme.findMany({
-        skip,
-        take,
-        where,
-        orderBy: { [sortBy]: order },
-      }),
-      this.prisma.filme.count({ where }),
-    ]);
-
-    return { movies, total };
-  }
-
-  private buildWhere(params: {
-    search?: string;
-    generos?: string[];
-    classificacoesIndicativas?: string[];
-    minDuration?: number;
-    maxDuration?: number;
-    startDate?: string;
-    endDate?: string;
-  }): Prisma.FilmeWhereInput {
-    const {
-      search,
-      generos,
-      classificacoesIndicativas,
-      minDuration,
-      maxDuration,
-      startDate,
-      endDate,
-    } = params;
-
-    const conditions: (Prisma.FilmeWhereInput | undefined)[] = [
-      search
-        ? {
-            OR: [
-              { titulo: { contains: search, mode: 'insensitive' } },
-              { tituloOriginal: { contains: search, mode: 'insensitive' } },
-            ],
-          }
-        : undefined,
-      generos?.length ? { generos: { hasSome: generos } } : undefined,
-      classificacoesIndicativas?.length
-        ? { classificacaoIndicativa: { in: classificacoesIndicativas } }
-        : undefined,
-      minDuration || maxDuration
-        ? {
-            duracao: {
-              gte: minDuration ?? undefined,
-              lte: maxDuration ?? undefined,
-            },
-          }
-        : undefined,
-      startDate || endDate
-        ? {
-            dataLancamento: {
-              gte: startDate ? new Date(startDate) : undefined,
-              lte: endDate ? new Date(endDate) : undefined,
-            },
-          }
-        : undefined,
-    ];
-
-    return {
-      AND: conditions.filter(Boolean) as Prisma.FilmeWhereInput[],
-    };
-  }
-
-  findAll(params: {
+  async findAll(params: {
     skip?: number;
     take?: number;
     search?: string;
@@ -363,58 +251,61 @@ export class MovieService {
     maxDuration?: number;
     startDate?: string;
     endDate?: string;
+    userId?: string;
   }) {
     const {
       skip = 0,
       take = 10,
-      search,
-      generos,
-      classificacoes,
       sortBy = 'createdAt',
       order = 'desc',
-      minDuration,
-      maxDuration,
-      startDate,
-      endDate,
+      userId,
+      ...filters
     } = params;
 
-    return this.prisma.filme.findMany({
-      skip,
-      take,
-      where: {
-        AND: [
-          search
-            ? {
-                OR: [
-                  { titulo: { contains: search, mode: 'insensitive' } },
-                  { tituloOriginal: { contains: search, mode: 'insensitive' } },
-                ],
-              }
-            : {},
-          generos?.length ? { generos: { hasSome: generos } } : {},
-          classificacoes?.length
-            ? { classificacaoIndicativa: { in: classificacoes } }
-            : {},
-          minDuration || maxDuration
-            ? {
-                duracao: {
-                  gte: minDuration ?? undefined,
-                  lte: maxDuration ?? undefined,
-                },
-              }
-            : {},
-          startDate || endDate
-            ? {
-                dataLancamento: {
-                  gte: startDate ? new Date(startDate) : undefined,
-                  lte: endDate ? new Date(endDate) : undefined,
-                },
-              }
-            : {},
+    const AND: any[] = [];
+
+    if (userId) AND.push({ user: { id: userId } });
+
+    if (filters.search)
+      AND.push({
+        OR: [
+          { titulo: { contains: filters.search, mode: 'insensitive' } },
+          { tituloOriginal: { contains: filters.search, mode: 'insensitive' } },
         ],
-      },
-      orderBy: { [sortBy]: order },
-    });
+      });
+    if (filters.generos?.length)
+      AND.push({ generos: { hasSome: filters.generos } });
+    if (filters.classificacoes?.length)
+      AND.push({ classificacaoIndicativa: { in: filters.classificacoes } });
+    if (filters.minDuration || filters.maxDuration)
+      AND.push({
+        duracao: {
+          gte: filters.minDuration ?? undefined,
+          lte: filters.maxDuration ?? undefined,
+        },
+      });
+    if (filters.startDate || filters.endDate)
+      AND.push({
+        dataLancamento: {
+          gte: filters.startDate ? new Date(filters.startDate) : undefined,
+          lte: filters.endDate ? new Date(filters.endDate) : undefined,
+        },
+      });
+
+    const where = { AND };
+
+    const [movies, total] = await Promise.all([
+      this.prisma.filme.findMany({
+        skip,
+        take,
+        where,
+        orderBy: { [sortBy]: order },
+        include: { user: true },
+      }),
+      this.prisma.filme.count({ where }),
+    ]);
+
+    return { movies, total };
   }
 
   findOne(id: string) {

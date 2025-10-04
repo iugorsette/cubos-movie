@@ -3,15 +3,17 @@ import { Flex, Button } from '@radix-ui/themes'
 import MovieCard from '../MovieCard'
 import MyButton from '../Button'
 import type { Movie } from '../../types/movie'
-import { movieStore } from '../../store/movie.store'
 import { useSearchParams } from 'react-router-dom'
 import ListState from './ListState'
 import { ChevronLeftIcon, ChevronRightIcon } from '@radix-ui/react-icons'
+import { useMovieStore } from '../../stores/movie.store'
 
 export default function MovieList() {
+  const movieStore = useMovieStore()
   const [movies, setMovies] = useState<Movie[]>([])
   const [total, setTotal] = useState(0)
   const [page, setPage] = useState(1)
+  const [loading, setLoading] = useState(false)
   const perPage = 10
 
   const [searchParams, setSearchParams] = useSearchParams()
@@ -26,10 +28,12 @@ export default function MovieList() {
   useEffect(() => {
     const subMovies = movieStore.movies$.subscribe(setMovies)
     const subTotal = movieStore.total$.subscribe(setTotal)
+    const subLoading = movieStore.loading$.subscribe(setLoading)
 
     return () => {
       subMovies.unsubscribe()
       subTotal.unsubscribe()
+      subLoading.unsubscribe()
     }
   }, [])
 
@@ -45,7 +49,7 @@ export default function MovieList() {
 
   const getPageButtons = () => {
     const buttons: (number | string)[] = []
-    const maxButtons = window.innerWidth <= 480 ? 3 : 5 
+    const maxButtons = window.innerWidth <= 480 ? 3 : 5
     const startPage = Math.max(1, page - 2)
     const endPage = Math.min(totalPages, startPage + maxButtons - 1)
 
@@ -66,9 +70,7 @@ export default function MovieList() {
         wrap='wrap'
         gap='4'
         justify='center'>
-        <ListState
-          loading={movieStore.getLoading()}
-          emptyMessage='Nenhum filme encontrado'>
+        <ListState loading={loading} emptyMessage='Nenhum filme encontrado'>
           {movies.map((movie) => (
             <MovieCard
               key={movie.id}
