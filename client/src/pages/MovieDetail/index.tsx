@@ -26,7 +26,7 @@ export default function MovieDetail() {
     if (!id || !token) return
     try {
       await deleteMovie(id)
-      navigate('/')
+      navigate(-1)
     } catch (err) {
       console.error('Erro ao deletar filme:', err)
       alert('Não foi possível deletar o filme.')

@@ -16,7 +16,7 @@ export default function ListState({
 }: ListStateProps) {
   if (loading) {
     return (
-      <Flex justify="center" align="center" style={{ minHeight: 100 }}>
+      <Flex justify="center" align="center" style={{ minHeight: 500 }}>
         <Spinner />
         <span style={{ marginLeft: 8 }}>Carregando...</span>
       </Flex>
@@ -25,7 +25,7 @@ export default function ListState({
 
   if (error) {
     return (
-      <Flex justify="center" align="center" style={{ minHeight: 100, color: 'red' }}>
+      <Flex justify="center" align="center" style={{ minHeight: 500, color: 'red' }}>
         {error}
       </Flex>
     )
@@ -33,7 +33,7 @@ export default function ListState({
 
   if (Children.count(children) === 0) {
     return (
-      <Flex justify="center" align="center" style={{ minHeight: 100, color: '#666' }}>
+      <Flex justify="center" align="center" style={{ minHeight: 500, color: '#666' }}>
         {emptyMessage}
       </Flex>
     )
