@@ -7,7 +7,7 @@ export class MailService {
   private transporter: nodemailer.Transporter;
 
   constructor() {
-    nodemailer.createTestAccount().then((testAccount) => {
+    void nodemailer.createTestAccount().then((testAccount) => {
       this.transporter = nodemailer.createTransport({
         host: 'smtp.ethereal.email',
         port: 587,

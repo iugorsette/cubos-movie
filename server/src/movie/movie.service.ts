@@ -266,6 +266,15 @@ export class MovieService {
 
     if (userId) AND.push({ user: { id: userId } });
 
+    if (filters.classificacoes && Array.isArray(filters.classificacoes)) {
+      const validClassifs = filters.classificacoes.filter(
+        (c) => c && c.trim() !== '',
+      );
+      if (validClassifs.length > 0) {
+        AND.push({ classificacaoIndicativa: { in: validClassifs } });
+      }
+    }
+
     if (filters.search)
       AND.push({
         OR: [
@@ -275,8 +284,6 @@ export class MovieService {
       });
     if (filters.generos?.length)
       AND.push({ generos: { hasSome: filters.generos } });
-    if (filters.classificacoes?.length)
-      AND.push({ classificacaoIndicativa: { in: filters.classificacoes } });
     if (filters.minDuration || filters.maxDuration)
       AND.push({
         duracao: {
