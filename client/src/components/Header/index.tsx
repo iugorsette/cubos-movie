@@ -2,9 +2,9 @@ import { Flex, Text } from '@radix-ui/themes'
 import ThemeToggle from '../../theme/ThemeToggle'
 import LogoLight from '../../assets/CubosLogo.png'
 import LogoDark from '../../assets/CubosLogoDark.png'
-import { useTheme } from '../../context/useTheme'
+import { useTheme } from '../../hooks/useTheme'
 import MyButton from '../Button'
-import { useAuth } from '../../context/useAuth'
+import { useAuth } from '../../hooks/useAuth'
 import { useNavigate } from 'react-router-dom'
 
 export default function Header() {

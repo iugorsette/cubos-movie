@@ -7,7 +7,7 @@ import {
   loginService,
   register,
 } from '../../services/auth.service'
-import { useAuth } from '../../context/useAuth'
+import { useAuth } from '../../hooks/useAuth'
 import { useNavigate } from 'react-router-dom'
 
 type Mode = 'login' | 'register' | 'forgot'
@@ -73,7 +73,7 @@ export default function AuthPage() {
     <Flex
       align='center'
       justify='center'
-      style={{ minHeight: '100vh', padding: 24 }}>
+      style={{ minHeight: '90vh', padding: 24 }}>
       <Card size='4' style={{ width: 420 }}>
         <form onSubmit={handleSubmit}>
           <Flex direction='column' gap='3'>

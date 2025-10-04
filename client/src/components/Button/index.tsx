@@ -1,6 +1,6 @@
 import { Button, IconButton } from '@radix-ui/themes'
 import type { ComponentProps } from 'react'
-import { useTheme } from '../../context/useTheme'
+import { useTheme } from '../../hooks/useTheme'
 
 type MyButtonProps = Omit<ComponentProps<typeof Button>, 'variant' | 'colorVariant'> & {
   colorVariant?: 'primary' | 'secondary' // agora repassaremos para o Radix

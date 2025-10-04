@@ -1,4 +1,4 @@
-import { useTheme } from '../../context/useTheme'
+import { useTheme } from "../../hooks/useTheme"
 
 export default function GenerosChips({ generos }: { generos: string[] }) {
   const { isDark } = useTheme()

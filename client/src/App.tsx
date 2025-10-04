@@ -1,11 +1,11 @@
 import { Theme } from '@radix-ui/themes'
 import Header from './components/Header'
 import { ThemeProvider } from './context/ThemeContext'
-import { useTheme } from './context/useTheme'
-import AppRoutes from './routes'
+import AppRoutes from './routes/AppRoutes'
 import BackGround from './assets/BACKGROUND.png'
-import { AuthProvider } from './context/useAuth'
+import { AuthProvider } from './hooks/useAuth'
 import { BrowserRouter } from 'react-router-dom'
+import { useTheme } from './hooks/useTheme'
 function AppContent() {
   const { isDark } = useTheme()
 

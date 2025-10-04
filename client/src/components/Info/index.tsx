@@ -1,4 +1,4 @@
-import { useTheme } from '../../context/useTheme'
+import { useTheme } from '../../hooks/useTheme'
 
 const classificacaoLabels: Record<string, string> = {
   LIVRE: 'Livre',

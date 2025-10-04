@@ -1,6 +1,7 @@
 import { forwardRef, useState } from 'react'
 import type { InputHTMLAttributes, ReactNode } from 'react'
-import { useTheme } from '../../context/useTheme'
+import { EyeOpenIcon, EyeClosedIcon } from '@radix-ui/react-icons'
+import { useTheme } from '../../hooks/useTheme'
 
 export type MyInputProps = InputHTMLAttributes<HTMLInputElement> & {
   label?: string
@@ -17,6 +18,7 @@ export type MyInputProps = InputHTMLAttributes<HTMLInputElement> & {
     | 'url'
     | 'email'
     | 'textarea'
+    | 'password'
   onFileChange?: (file: File | undefined) => void
   width?: string | number
 }
@@ -38,6 +40,7 @@ const MyInput = forwardRef<HTMLInputElement, MyInputProps>(
   ) => {
     const { isDark } = useTheme()
     const [focused, setFocused] = useState(false)
+    const [showPassword, setShowPassword] = useState(false)
 
     const borderDefault = '#3C393F'
     const borderFocus = '#8E4EC6'
@@ -45,6 +48,9 @@ const MyInput = forwardRef<HTMLInputElement, MyInputProps>(
     const bgDark = '#1A191B'
     const textLight = '#0B0B0B'
     const textDark = '#F5F5F7'
+
+    const isPassword = type === 'password'
+    const inputType = isPassword ? (showPassword ? 'text' : 'password') : type
 
     return (
       <label
@@ -68,7 +74,7 @@ const MyInput = forwardRef<HTMLInputElement, MyInputProps>(
         <div style={{ position: 'relative', width: '100%' }}>
           <input
             ref={ref}
-            type={type}
+            type={inputType}
             placeholder={placeholder}
             aria-label={label ?? placeholder}
             aria-invalid={!!error}
@@ -89,7 +95,7 @@ const MyInput = forwardRef<HTMLInputElement, MyInputProps>(
             }}
             style={{
               width: '100%',
-              padding: icon ? '10px 36px 10px 12px' : '10px 12px',
+              padding: icon || isPassword ? '10px 36px 10px 12px' : '10px 12px',
               borderRadius: '4px',
               border: `1px solid ${focused ? borderFocus : borderDefault}`,
               backgroundColor: isDark ? bgDark : bgLight,
@@ -101,7 +107,7 @@ const MyInput = forwardRef<HTMLInputElement, MyInputProps>(
             }}
           />
 
-          {icon && (
+          {icon && !isPassword && (
             <span
               style={{
                 position: 'absolute',
@@ -116,6 +122,32 @@ const MyInput = forwardRef<HTMLInputElement, MyInputProps>(
               {icon}
             </span>
           )}
+
+          {isPassword && (
+            <button
+              type='button'
+              onClick={() => setShowPassword((prev) => !prev)}
+              style={{
+                position: 'absolute',
+                right: 10,
+                top: '50%',
+                transform: 'translateY(-50%)',
+                background: 'none',
+                border: 'none',
+                padding: 0,
+                margin: 0,
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                color: isDark ? textDark : textLight,
+              }}>
+              {showPassword ? (
+                <EyeClosedIcon width={20} height={20} />
+              ) : (
+                <EyeOpenIcon width={20} height={20} />
+              )}
+            </button>
+          )}
         </div>
 
         {error && (
@@ -129,4 +161,5 @@ const MyInput = forwardRef<HTMLInputElement, MyInputProps>(
 )
 
 MyInput.displayName = 'MyInput'
+
 export default MyInput

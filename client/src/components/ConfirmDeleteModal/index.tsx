@@ -1,4 +1,4 @@
-import { useTheme } from '../../context/useTheme'
+import { useTheme } from '../../hooks/useTheme'
 import * as Dialog from '@radix-ui/react-dialog'
 import MyButton from '../Button'
 

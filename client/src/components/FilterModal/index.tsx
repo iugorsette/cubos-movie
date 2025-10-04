@@ -11,7 +11,7 @@ import {
   ChevronUpIcon,
 } from '@radix-ui/react-icons'
 import { movieStore } from '../../services/movie.store'
-import { useTheme } from '../../context/useTheme'
+import { useTheme } from '../../hooks/useTheme'
 import MyInput from '../Input'
 import Slider from 'rc-slider'
 import 'rc-slider/assets/index.css'
