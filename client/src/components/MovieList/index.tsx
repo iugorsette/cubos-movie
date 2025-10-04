@@ -6,6 +6,7 @@ import type { Movie } from '../../types/movie'
 import { movieStore } from '../../store/movie.store'
 import { useSearchParams } from 'react-router-dom'
 import ListState from './ListState'
+import { ChevronLeftIcon, ChevronRightIcon } from '@radix-ui/react-icons'
 
 export default function MovieList() {
   const [movies, setMovies] = useState<Movie[]>([])
@@ -87,7 +88,7 @@ export default function MovieList() {
             disabled={page === 1}
             onClick={() => goToPage(page - 1)}
             variant='outline'>
-            Anterior
+            <ChevronLeftIcon />
           </Button>
 
           {getPageButtons().map((p, i) =>
@@ -109,7 +110,7 @@ export default function MovieList() {
             disabled={page === totalPages}
             onClick={() => goToPage(page + 1)}
             variant='outline'>
-            Próxima
+            <ChevronRightIcon />
           </Button>
         </Flex>
       )}
