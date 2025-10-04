@@ -24,7 +24,7 @@ export default function MyButton({
       dark: { default: '#8457AA', hover: '#9A5CD0', active: '#8E4EC6', disabled: '#6F6D78', color: '#FFF' },
     },
     secondary: {
-      light: { default: '#B744F708', hover: '#C150FF18', active: '#B412F904', disabled: '#EBEAF808', color: '#000' },
+      light: { default: '#B744F720', hover: '#C150FF18', active: '#B412F904', disabled: '#EBEAF808', color: '#000' },
       dark: { default: '#B744F720', hover: '#C150FF33', active: '#B412F918', disabled: '#EBEAF833', color: '#FFF' },
     },
   }

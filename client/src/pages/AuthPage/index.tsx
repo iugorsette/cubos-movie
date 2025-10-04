@@ -53,7 +53,7 @@ export default function AuthPage() {
           email: form.email,
           password: form.password,
         })
-        loginContext(data.user, data.token) 
+        loginContext(data.user, data.token)
         navigate('/filmes')
       }
 
