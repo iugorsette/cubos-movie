@@ -90,6 +90,8 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
       take: DEFAULT_TAKE,
       startDate: undefined,
       endDate: undefined,
+      minDuration: undefined,
+      maxDuration: undefined,
     })
     setSearchParams({})
     onClose()

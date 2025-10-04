@@ -5,6 +5,7 @@ import MyButton from '../Button'
 import type { Movie } from '../../types/movie'
 import { movieStore } from '../../store/movie.store'
 import { useSearchParams } from 'react-router-dom'
+import ListState from './ListState'
 
 export default function MovieList() {
   const [movies, setMovies] = useState<Movie[]>([])
@@ -57,10 +58,10 @@ export default function MovieList() {
   return (
     <div>
       <Flex wrap='wrap' gap='3' justify='start'>
-        {movies.length === 0 ? (
-          <p>Carregando ou nenhum filme encontrado...</p>
-        ) : (
-          movies.map((movie) => (
+        <ListState
+          loading={movieStore.getLoading()}
+          emptyMessage='Nenhum filme encontrado'>
+          {movies.map((movie) => (
             <MovieCard
               key={movie.id}
               title={movie.titulo}
@@ -69,8 +70,8 @@ export default function MovieList() {
               id={movie.id as string}
               cover={movie.capaUrl}
             />
-          ))
-        )}
+          ))}
+        </ListState>
       </Flex>
 
       {totalPages > 1 && (

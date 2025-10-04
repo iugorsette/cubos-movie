@@ -71,6 +71,11 @@ class MovieStore {
   getFilters() {
     return { ...this.filters }
   }
+
+  getLoading(){
+    return this.loading
+  }
+
 }
 
 export const movieStore = new MovieStore()
