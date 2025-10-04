@@ -19,28 +19,41 @@ export default function Filmes() {
 
   return (
     <Flex direction='column' style={{ padding: '24px', gap: '24px' }}>
-      <Flex align='center' justify='end' gap='3'>
-        <MyInput
-          placeholder='Pesquise por filmes...'
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          icon={<MagnifyingGlassIcon />}
-        />
-
-        <MyButton colorVariant='secondary' onClick={() => setFiltersOpen(true)}>
-          Filtros
-        </MyButton>
-
-        {filtersOpen && (
-          <FilterModal
-            isOpen={filtersOpen}
-            onClose={() => setFiltersOpen(false)}
+      <Flex
+        align='center'
+        justify='end'
+        gap='3'
+        style={{
+          flexDirection: 'row',
+          flexWrap: 'wrap',
+        }}>
+        <Flex style={{ flex: 1, minWidth: 200, maxWidth: 500 }}>
+          <MyInput
+            placeholder='Pesquise por filmes...'
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            icon={<MagnifyingGlassIcon />}
           />
-        )}
+        </Flex>
 
-        <MyButton colorVariant='primary' onClick={handleAddMovie}>
-          Adicionar Filme
-        </MyButton>
+        <Flex gap='2' style={{ flexWrap: 'wrap', marginTop: 8 }}>
+          <MyButton
+            colorVariant='secondary'
+            onClick={() => setFiltersOpen(true)}>
+            Filtros
+          </MyButton>
+
+          {filtersOpen && (
+            <FilterModal
+              isOpen={filtersOpen}
+              onClose={() => setFiltersOpen(false)}
+            />
+          )}
+
+          <MyButton colorVariant='primary' onClick={handleAddMovie}>
+            Adicionar Filme
+          </MyButton>
+        </Flex>
       </Flex>
 
       <MovieList />

@@ -45,7 +45,7 @@ export default function MovieList() {
 
   const getPageButtons = () => {
     const buttons: (number | string)[] = []
-    const maxButtons = 5
+    const maxButtons = window.innerWidth <= 480 ? 3 : 5 
     const startPage = Math.max(1, page - 2)
     const endPage = Math.min(totalPages, startPage + maxButtons - 1)
 
