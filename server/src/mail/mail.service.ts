@@ -7,16 +7,16 @@ export class MailService {
   private transporter: nodemailer.Transporter;
 
   constructor() {
-    void nodemailer.createTestAccount().then((testAccount) => {
-      this.transporter = nodemailer.createTransport({
-        host: 'smtp.ethereal.email',
-        port: 587,
-        auth: {
-          user: testAccount.user,
-          pass: testAccount.pass,
-        },
-      });
-    });
+    // void nodemailer.createTestAccount().then((testAccount) => {
+    //   this.transporter = nodemailer.createTransport({
+    //     host: 'smtp.ethereal.email',
+    //     port: 587,
+    //     auth: {
+    //       user: testAccount.user,
+    //       pass: testAccount.pass,
+    //     },
+    //   });
+    // });
   }
 
   async sendMail(to: string, subject: string, text: string) {

@@ -7,7 +7,7 @@ import { CLASSIFICACAO_INDICATIVA, type MovieFormData } from '../../../types/mov
 import { movieStore } from '../../../stores/movie.store'
 import MyButton from '../../Button'
 import MovieFormFields from '../MovieFormFields'
-
+import './index.css'
 type MovieModalProps = {
   isOpen: boolean
   onClose: () => void
@@ -159,7 +159,9 @@ export default function MovieModal({
             right: 0,
             boxShadow: '0px 10px 30px rgba(0,0,0,0.2)',
             transition: 'all 0.3s ease-in-out',
-          }}>
+          }}
+          className='movie-modal'
+          >
           <div
             style={{
               display: 'flex',

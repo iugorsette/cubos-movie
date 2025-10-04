@@ -9,7 +9,7 @@
   - ⚠️ [ ] Garantir responsividade para todas as dimensões intermediárias  
 
 - **Detalhes de UX/UI**  
-  - ⚠️ [ ] Implementar melhorias de navegação e experiência do usuário  
+  - ⚠️ [x] Implementar melhorias de navegação e experiência do usuário  
 
 - **Tema claro e escuro**  
   - ✅ [x] Alternância de tema implementada, botão no canto superior direito  
