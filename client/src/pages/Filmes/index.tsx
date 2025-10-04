@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Flex } from '@radix-ui/themes'
 import MyInput from '../../components/Input'
 import MyButton from '../../components/Button'
@@ -6,6 +6,10 @@ import { MagnifyingGlassIcon } from '@radix-ui/react-icons'
 import MovieList from '../../components/MovieList'
 import MovieModal from '../../components/MovieModal'
 import FilterModal from '../../components/FilterModal'
+import { movieStore } from '../../store/movie.store'
+import { BehaviorSubject, debounceTime, distinctUntilChanged } from 'rxjs'
+
+const searchSubject = new BehaviorSubject<string>('')
 
 export default function Filmes() {
   const [search, setSearch] = useState('')
@@ -16,6 +20,20 @@ export default function Filmes() {
   function handleAddMovie() {
     setModalOpen(true)
   }
+
+  useEffect(() => {
+    const sub = searchSubject
+      .pipe(debounceTime(400), distinctUntilChanged())
+      .subscribe((value) => {
+        movieStore.setFilters({
+          take: 10,
+          skip: 0,
+          search: value.trim() || undefined,
+        })
+      })
+
+    return () => sub.unsubscribe()
+  }, [])
 
   return (
     <Flex direction='column' style={{ padding: '24px', gap: '24px' }}>
@@ -31,7 +49,10 @@ export default function Filmes() {
           <MyInput
             placeholder='Pesquise por filmes...'
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) => {
+              setSearch(e.target.value)
+              searchSubject.next(e.target.value)
+            }}
             icon={<MagnifyingGlassIcon />}
           />
         </Flex>
