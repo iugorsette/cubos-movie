@@ -27,12 +27,9 @@ export default function MovieList() {
   useEffect(() => {
     const subMovies = movieStore.movies$.subscribe(setMovies)
     const subTotal = movieStore.total$.subscribe(setTotal)
-    // const subLoading = movieStore.loading$.subscribe(setLoading)
-
     return () => {
       subMovies.unsubscribe()
       subTotal.unsubscribe()
-      // subLoading.unsubscribe()
     }
   }, [])
 

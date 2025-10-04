@@ -104,6 +104,7 @@ export default function MovieFormFields({
         />
         <MyInput
           label='Sinopse'
+          type='textarea'
           value={form.sinopse}
           onChange={(e) => handleChange('sinopse', e.target.value)}
         />
