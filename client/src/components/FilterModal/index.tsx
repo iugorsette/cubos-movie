@@ -22,7 +22,14 @@ type FilterModalProps = {
   isOpen: boolean
   onClose: () => void
 }
-const classificacoesIndicativas = [
+
+type SortBy = 'titulo' | 'dataLancamento' | 'popularidade'
+type SortOrder = 'asc' | 'desc'
+
+const classificacoesIndicativas: {
+  value: ClassificacaoIndicativa
+  label: string
+}[] = [
   { value: 'LIVRE', label: 'Livre' },
   { value: 'DEZ', label: '10 anos' },
   { value: 'DOZE', label: '12 anos' },
@@ -36,10 +43,8 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
   const [classificacoes, setClassificacoes] = useState<
     ClassificacaoIndicativa[]
   >([])
-  const [sortBy, setSortBy] = useState<
-    'titulo' | 'dataLancamento' | 'popularidade'
-  >('titulo')
-  const [order, setOrder] = useState<'asc' | 'desc'>('asc')
+  const [sortBy, setSortBy] = useState<SortBy>('titulo')
+  const [order, setOrder] = useState<SortOrder>('asc')
   const [duration, setDuration] = useState({ min: 0, max: 300 })
   const [dateRange, setDateRange] = useState({ start: '', end: '' })
   const [searchParams, setSearchParams] = useSearchParams()
@@ -53,8 +58,8 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
     if (isOpen) {
       const params = Object.fromEntries([...searchParams])
 
-      setSortBy((params.sortBy as any) || 'titulo')
-      setOrder((params.order as any) || 'asc')
+      setSortBy((params.sortBy as SortBy) || 'titulo')
+      setOrder((params.order as SortOrder) || 'asc')
       setDuration({
         min: params.minDuration ? Number(params.minDuration) : 0,
         max: params.maxDuration ? Number(params.maxDuration) : 300,
