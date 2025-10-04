@@ -7,12 +7,13 @@ import MovieList from '../../components/MovieList'
 import MovieModal from '../../components/MovieModal'
 import FilterModal from '../../components/FilterModal'
 import { BehaviorSubject, debounceTime, distinctUntilChanged } from 'rxjs'
-import { useMovieStore } from '../../stores/movie.store'
+import { movieStore } from '../../stores/movie.store'
+import { setGetToken } from '../../services/movies.service'
 
 const searchSubject = new BehaviorSubject<string>('')
 
 export default function Filmes() {
-  const movieStore = useMovieStore()
+  setGetToken(() => localStorage.getItem('token'))
   const [search, setSearch] = useState('')
   const [modalOpen, setModalOpen] = useState(false)
   const [filtersOpen, setFiltersOpen] = useState(false)

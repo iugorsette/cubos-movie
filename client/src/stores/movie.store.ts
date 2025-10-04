@@ -1,8 +1,6 @@
 import { BehaviorSubject } from 'rxjs'
-import { useEffect } from 'react'
-import { useAuth } from '../hooks/useAuth'
 import type { Movie, ClassificacaoIndicativa } from '../types/movie'
-import * as movieService from '../services/movies.service'
+import { createMovie, deleteMovie, getMovies, updateMovie } from '../services/movies.service'
 
 type MovieFilters = {
   search?: string
@@ -18,70 +16,51 @@ type MovieFilters = {
   take?: number
 }
 
-export function useMovieStore() {
-  const { token } = useAuth()
+class MovieStore {
+  private moviesSubject = new BehaviorSubject<Movie[]>([])
+  public movies$ = this.moviesSubject.asObservable()
 
-  useEffect(() => {
-    movieService.setGetToken(() => token)
-  }, [token])
+  private totalSubject = new BehaviorSubject<number>(0)
+  public total$ = this.totalSubject.asObservable()
 
-  const moviesSubject = new BehaviorSubject<Movie[]>([])
-  const totalSubject = new BehaviorSubject<number>(0)
-  const loadingSubject = new BehaviorSubject<boolean>(false)
+  private filters: MovieFilters = { take: 10, skip: 0 }
 
-  let filters: MovieFilters = { take: 10, skip: 0 }
-
-  const fetchMovies = async () => {
-    if (loadingSubject.value) return
-    loadingSubject.next(true)
-    try {
-      const data = await movieService.getMovies(filters)
-      moviesSubject.next(data.movies)
-      totalSubject.next(data.total)
-    } catch (err) {
-      console.error('Erro ao buscar filmes:', err)
-    } finally {
-      loadingSubject.next(false)
-    }
+  setFilters(filters: MovieFilters) {
+    this.filters = { ...this.filters, ...filters }
+    this.fetchMovies()
   }
 
-  const setFilters = (newFilters: MovieFilters) => {
-    filters = { ...filters, ...newFilters }
-    fetchMovies()
+  async fetchMovies() {
+    const data = await getMovies(this.filters)
+    this.moviesSubject.next(data.movies)
+    this.totalSubject.next(data.total)
   }
 
-  const setPage = (page: number) => {
-    const take = filters.take ?? 10
-    filters.skip = (page - 1) * take
-    fetchMovies()
-  }
-
-  const addMovie = async (movie: Movie) => {
-    const newMovie = await movieService.createMovie(movie)
-    await fetchMovies()
+  async addMovie(movie: Movie) {
+    const newMovie = await createMovie(movie)
+    await this.fetchMovies()
     return newMovie
   }
 
-  const updateMovie = async (id: string, movie: Partial<Movie>) => {
-    const updated = await movieService.updateMovie(id, movie as Movie)
-    await fetchMovies()
+  async updateMovie(id: string, movie: Partial<Movie>) {
+    const updated = await updateMovie(id, movie as Movie)
+    await this.fetchMovies()
     return updated
   }
 
-  const deleteMovie = async (id: string) => {
-    await movieService.deleteMovie(id)
-    await fetchMovies()
+  async deleteMovie(id: string) {
+    await deleteMovie(id)
+    await this.fetchMovies()
   }
 
-  return {
-    movies$: moviesSubject.asObservable(),
-    total$: totalSubject.asObservable(),
-    loading$: loadingSubject.asObservable(),
-    fetchMovies,
-    setFilters,
-    setPage,
-    addMovie,
-    updateMovie,
-    deleteMovie,
+  setPage(page: number) {
+    this.filters.skip = (page - 1) * (this.filters.take ?? 10)
+    this.fetchMovies()
+  }
+  
+  getFilters() {
+    return { ...this.filters }
   }
 }
+
+export const movieStore = new MovieStore()

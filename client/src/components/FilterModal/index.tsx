@@ -17,7 +17,7 @@ import 'rc-slider/assets/index.css'
 import { useSearchParams } from 'react-router-dom'
 import './index.css'
 import type { ClassificacaoIndicativa } from '../../types/movie'
-import { useMovieStore } from '../../stores/movie.store'
+import { movieStore } from '../../stores/movie.store'
 type FilterModalProps = {
   isOpen: boolean
   onClose: () => void
@@ -39,7 +39,6 @@ const classificacoesIndicativas: {
 ]
 
 export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
-  const movieStore = useMovieStore()
   const { isDark } = useTheme()
   const [classificacoes, setClassificacoes] = useState<
     ClassificacaoIndicativa[]
@@ -88,17 +87,14 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
     setDuration({ min: 0, max: 300 })
     setDateRange({ start: '', end: '' })
     setClassificacoes([])
-    movieStore.setFilters({
+
+    const filters: any = {
       sortBy: 'titulo',
       order: 'asc',
       skip: 0,
-      classificacoesIndicativas: [],
       take: DEFAULT_TAKE,
-      startDate: undefined,
-      endDate: undefined,
-      minDuration: undefined,
-      maxDuration: undefined,
-    })
+    }
+    movieStore.setFilters(filters)
     setSearchParams({})
     onClose()
   }

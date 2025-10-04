@@ -6,10 +6,9 @@ import type { Movie } from '../../types/movie'
 import { useSearchParams } from 'react-router-dom'
 import ListState from './ListState'
 import { ChevronLeftIcon, ChevronRightIcon } from '@radix-ui/react-icons'
-import { useMovieStore } from '../../stores/movie.store'
+import { movieStore } from '../../stores/movie.store'
 
 export default function MovieList() {
-  const movieStore = useMovieStore()
   const [movies, setMovies] = useState<Movie[]>([])
   const [total, setTotal] = useState(0)
   const [page, setPage] = useState(1)
@@ -28,12 +27,12 @@ export default function MovieList() {
   useEffect(() => {
     const subMovies = movieStore.movies$.subscribe(setMovies)
     const subTotal = movieStore.total$.subscribe(setTotal)
-    const subLoading = movieStore.loading$.subscribe(setLoading)
+    // const subLoading = movieStore.loading$.subscribe(setLoading)
 
     return () => {
       subMovies.unsubscribe()
       subTotal.unsubscribe()
-      subLoading.unsubscribe()
+      // subLoading.unsubscribe()
     }
   }, [])
 
