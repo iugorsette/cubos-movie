@@ -7,6 +7,7 @@ import { AuthProvider } from './hooks/useAuth'
 import { BrowserRouter } from 'react-router-dom'
 import { useTheme } from './hooks/useTheme'
 import BackgroundWithGradient from './components/Background'
+import Footer from './components/Footer'
 function AppContent() {
   const { isDark } = useTheme()
 
@@ -23,6 +24,7 @@ function AppContent() {
           <BackgroundWithGradient imageUrl={BackGround}>
             <Header />
             <AppRoutes />
+            <Footer />
           </BackgroundWithGradient>
         </BrowserRouter>
       </AuthProvider>

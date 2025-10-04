@@ -17,7 +17,6 @@ export default function Filmes() {
   const [search, setSearch] = useState('')
   const [modalOpen, setModalOpen] = useState(false)
   const [filtersOpen, setFiltersOpen] = useState(false)
-  const [token] = useState(localStorage.getItem('token') || '')
 
   function handleAddMovie() {
     setModalOpen(true)
@@ -84,7 +83,6 @@ export default function Filmes() {
       <MovieModal
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
-        token={token}
         onSaved={() => setModalOpen(false)}
       />
     </Flex>

@@ -45,7 +45,7 @@ export default function MovieList() {
 
   const getPageButtons = () => {
     const buttons: (number | string)[] = []
-    const maxButtons = window.innerWidth <= 480 ? 3 : 5
+    const maxButtons = window.innerWidth <= 480 ? 2 : 5
     const startPage = Math.max(1, page - 2)
     const endPage = Math.min(totalPages, startPage + maxButtons - 1)
 
@@ -62,6 +62,7 @@ export default function MovieList() {
         style={{
           backgroundColor: 'rgba(235, 234, 248, 0.08)',
           padding: 24,
+          minHeight: '75vh',
         }}
         wrap='wrap'
         gap='4'
