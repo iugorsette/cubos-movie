@@ -6,7 +6,7 @@ import type { Movie } from '../../types/movie'
 import { useSearchParams } from 'react-router-dom'
 import ListState from './ListState'
 import { ChevronLeftIcon, ChevronRightIcon } from '@radix-ui/react-icons'
-import { movieStore } from '../../stores/movie.store'
+import { movieStore, type MovieFilters } from '../../stores/movie.store'
 
 export default function MovieList() {
   const [movies, setMovies] = useState<Movie[]>([])
@@ -22,6 +22,28 @@ export default function MovieList() {
     const pageParam = Number(searchParams.get('page')) || 1
     setPage(pageParam)
     movieStore.setPage(pageParam)
+  }, [])
+
+  useEffect(() => {
+    const params = Object.fromEntries([...searchParams])
+
+    const filters: MovieFilters = {
+      take: 10,
+      skip: (Number(params.page) - 1) * 10 || 0,
+      sortBy: (params.sortBy as MovieFilters['sortBy']) || undefined,
+      order: (params.order as MovieFilters['order']) || undefined,
+      minDuration: params.minDuration ? Number(params.minDuration) : undefined,
+      maxDuration: params.maxDuration ? Number(params.maxDuration) : undefined,
+      startDate: params.startDate || undefined,
+      endDate: params.endDate || undefined,
+      classificacoesIndicativas: params.classificacoesIndicativas
+        ? String(params.classificacoesIndicativas).split(',')
+        : undefined,
+    }
+
+    movieStore.setFilters(filters)
+
+    setPage(Number(params.page) || 1)
   }, [])
 
   useEffect(() => {

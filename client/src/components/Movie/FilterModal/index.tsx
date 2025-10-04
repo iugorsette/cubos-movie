@@ -58,8 +58,8 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
     if (isOpen) {
       const params = Object.fromEntries([...searchParams])
 
-      setSortBy((params.sortBy as SortBy) || 'titulo')
-      setOrder((params.order as SortOrder) || 'asc')
+      setSortBy((params.sortBy as SortBy) || 'dataLancamento')
+      setOrder((params.order as SortOrder) || 'desc')
       setDuration({
         min: params.minDuration ? Number(params.minDuration) : 0,
         max: params.maxDuration ? Number(params.maxDuration) : 300,
@@ -82,8 +82,8 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
     }
   }, [isOpen])
   function resetFilters() {
-    setSortBy('titulo')
-    setOrder('asc')
+    setSortBy('dataLancamento')
+    setOrder('desc')
     setDuration({ min: 0, max: 300 })
     setDateRange({ start: '', end: '' })
     setClassificacoes([])

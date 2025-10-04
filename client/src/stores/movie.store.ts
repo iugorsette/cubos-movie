@@ -7,7 +7,7 @@ import {
   updateMovie,
 } from '../services/movies.service'
 
-type MovieFilters = {
+export type MovieFilters = {
   search?: string
   generos?: string[]
   classificacoesIndicativas?: ClassificacaoIndicativa[]
@@ -28,10 +28,20 @@ class MovieStore {
   private totalSubject = new BehaviorSubject<number>(0)
   public total$ = this.totalSubject.asObservable()
 
-  private filters: MovieFilters = { take: 10, skip: 0 }
+  private filters: MovieFilters = {
+    take: 10,
+    skip: 0,
+    sortBy: 'dataLancamento',
+    order: 'desc',
+  }
 
   clearFilters() {
-    this.filters = { take: 10, skip: 0 }
+    this.filters = {
+    take: 10,
+    skip: 0,
+    sortBy: 'dataLancamento',
+    order: 'desc',
+  }
     this.fetchMovies()
   }
   setFilters(filters: MovieFilters) {
