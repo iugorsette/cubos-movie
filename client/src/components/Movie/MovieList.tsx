@@ -19,19 +19,16 @@ export default function MovieList() {
   const totalPages = Math.ceil(total / perPage)
 
   useEffect(() => {
-    const pageParam = Number(searchParams.get('page')) || 1
-    setPage(pageParam)
-    movieStore.setPage(pageParam)
-  }, [])
-
-  useEffect(() => {
     const params = Object.fromEntries([...searchParams])
+    const pageParam = Number(params.page) || 1
+
+    setPage(pageParam)
 
     const filters: MovieFilters = {
-      take: 10,
-      skip: (Number(params.page) - 1) * 10 || 0,
-      sortBy: (params.sortBy as MovieFilters['sortBy']) || undefined,
-      order: (params.order as MovieFilters['order']) || undefined,
+      take: perPage,
+      skip: (pageParam - 1) * perPage,
+      sortBy: params.sortBy as any,
+      order: params.order as any,
       minDuration: params.minDuration ? Number(params.minDuration) : undefined,
       maxDuration: params.maxDuration ? Number(params.maxDuration) : undefined,
       startDate: params.startDate || undefined,
@@ -46,8 +43,6 @@ export default function MovieList() {
     }
 
     movieStore.setFilters(filters)
-
-    setPage(Number(params.page) || 1)
   }, [])
 
   useEffect(() => {
