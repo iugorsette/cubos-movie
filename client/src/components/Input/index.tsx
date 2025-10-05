@@ -67,7 +67,6 @@ function parsePastedToRaw(s: string): string {
   if (!s) return ''
   const str = String(s).trim().toLowerCase()
 
-  // format like "2:50" or "02:50"
   if (str.includes(':')) {
     const parts = str.split(':').map((p) => p.replace(/\D/g, ''))
     if (parts.length >= 2) {
@@ -77,7 +76,6 @@ function parsePastedToRaw(s: string): string {
     }
   }
 
-  // format like "2h50m" or "2h 50m"
   const hMatch = str.match(/(\d+)\s*h/)
   const mMatch = str.match(/(\d+)\s*m/)
   if (hMatch) {
@@ -112,11 +110,9 @@ const MyInput = forwardRef<HTMLInputElement, MyInputProps>(
     const [showPassword, setShowPassword] = useState(false)
     const [displayValue, setDisplayValue] = useState<string>('')
 
-    // rawDigits stores the sequence of digits the user typed (e.g. '254')
-    const rawRef = useRef<string>('')
-    const [, forceRerender] = useState(0) // used only if needed to force update
-
-    // initialize display + raw when `value` prop (minutes) changes (edit mode)
+   const rawRef = useRef<string>('')
+    const [, forceRerender] = useState(0) 
+    
     useEffect(() => {
       if (type === 'duration') {
         const minutesNum = typeof value === 'number' ? value : Number(value)
@@ -142,7 +138,6 @@ const MyInput = forwardRef<HTMLInputElement, MyInputProps>(
       }
     }, [value, type])
 
-    // helper to update display and call onChange with minutes (string)
     const updateFromRaw = (newRaw: string) => {
       rawRef.current = newRaw
       if (!newRaw) {

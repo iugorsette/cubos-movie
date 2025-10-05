@@ -1,5 +1,5 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common'
-import { PrismaService } from '../prisma/prisma.service'
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Controller('users')
 export class UserController {
@@ -7,17 +7,16 @@ export class UserController {
 
   @Get()
   findAll() {
-    return this.prisma.user.findMany()
+    return this.prisma.user.findMany();
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.prisma.user.findUnique({ where: { id } })
+    return this.prisma.user.findUnique({ where: { id } });
   }
 
   @Post()
   create(@Body() body: { name: string; email: string; password: string }) {
-    // normalmente você chamaria AuthService.register aqui
-    return this.prisma.user.create({ data: body })
+    return this.prisma.user.create({ data: body });
   }
 }

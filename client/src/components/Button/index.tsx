@@ -6,7 +6,7 @@ type MyButtonProps = Omit<
   ComponentProps<typeof Button>,
   'variant' | 'colorVariant'
 > & {
-  colorVariant?: 'primary' | 'secondary' // agora repassaremos para o Radix
+  colorVariant?: 'primary' | 'secondary'
   icon?: React.ReactNode
   iconButton?: boolean
   variant?: 'solid' | 'soft' | 'outline'

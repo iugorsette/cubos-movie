@@ -206,7 +206,6 @@ export class MovieService {
   ) {
     const data: Partial<UpdateMovieDto> = {};
 
-    // Campos numéricos devem ser convertidos
     const numericFields = [
       'duracao',
       'popularidade',
@@ -229,7 +228,6 @@ export class MovieService {
       }
     }
 
-    // Arquivos
     if (capaFile) data.capaUrl = await this.uploadToGCS(capaFile);
     if (capaFundoFile) data.capaFundo = await this.uploadToGCS(capaFundoFile);
 

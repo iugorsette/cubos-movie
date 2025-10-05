@@ -42,8 +42,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [])
 
-  if (loading) return null // implementar spinner
-
+  if (loading) return null 
+  
   function login(user: User, token: string) {
     setUser(user)
     setToken(token)
