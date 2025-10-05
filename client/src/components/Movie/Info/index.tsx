@@ -27,7 +27,19 @@ export default function Info({
 
   if (value !== undefined && value !== null) {
     if (type === 'duration') {
-      displayValue = `${value} min`
+      const minutes = Number(value)
+      if (!isNaN(minutes)) {
+        if (minutes < 60) {
+          displayValue = `${minutes} min`
+        } else {
+          const hours = Math.floor(minutes / 60)
+          const remaining = minutes % 60
+          displayValue =
+            remaining > 0 ? `${hours}h ${remaining}min` : `${hours}h`
+        }
+      } else {
+        displayValue = '-'
+      }
     } else if (type === 'currency') {
       displayValue = formatCurrency(value)
     } else if (type === 'date') {

@@ -48,6 +48,17 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
   const [duration, setDuration] = useState({ min: 0, max: 300 })
   const [dateRange, setDateRange] = useState({ start: '', end: '' })
   const [searchParams, setSearchParams] = useSearchParams()
+  const SLIDER_MIN = 0
+  const SLIDER_MAX = 300
+
+  function formatDurationLabel(minutes: number) {
+    if (minutes === null || minutes === undefined || isNaN(minutes)) return '-'
+    const m = Math.max(0, Math.floor(minutes))
+    if (m < 60) return `${m} min`
+    const h = Math.floor(m / 60)
+    const rem = m % 60
+    return rem > 0 ? `${h}h ${rem}min` : `${h}h`
+  }
 
   function toggleClassificacao(value: ClassificacaoIndicativa) {
     setClassificacoes((prev) =>
@@ -184,48 +195,53 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
               <strong style={{ display: 'block', marginBottom: 8 }}>
                 Duração (minutos):
               </strong>
-              <Slider
-                style={{ margin: '12px' }}
-                range
-                min={0}
-                max={300}
-                step={10}
-                value={[duration.min, duration.max]}
-                onChange={(val) =>
-                  setDuration({ min: val[0] as number, max: val[1] as number })
-                }
-                trackStyle={[
-                  {
-                    backgroundColor: isDark ? '#8457AA' : '#8E4EC6',
+              <div style={{ position: 'relative', padding: '12px 0' }}>
+                <Slider
+                  style={{ margin: '12px 0' }}
+                  range
+                  min={SLIDER_MIN}
+                  max={SLIDER_MAX}
+                  step={10}
+                  value={[duration.min, duration.max]}
+                  onChange={(val) =>
+                    setDuration({
+                      min: val[0] as number,
+                      max: val[1] as number,
+                    })
+                  }
+                  trackStyle={[
+                    {
+                      backgroundColor: isDark ? '#8457AA' : '#8E4EC6',
+                      height: 8,
+                    },
+                  ]}
+                  railStyle={{
+                    backgroundColor: isDark ? '#444' : '#ccc',
                     height: 8,
-                  },
-                ]}
-                railStyle={{
-                  backgroundColor: isDark ? '#444' : '#ccc',
-                  height: 8,
-                }}
-                handleStyle={[
-                  {
-                    borderColor: isDark ? '#8457AA' : '#8E4EC6',
-                    backgroundColor: 'white',
-                    height: 20,
-                    width: 20,
-                  },
-                  {
-                    borderColor: isDark ? '#8457AA' : '#8E4EC6',
-                    backgroundColor: 'white',
-                    height: 20,
-                    width: 20,
-                  },
-                ]}
-              />
+                  }}
+                  handleStyle={[
+                    {
+                      borderColor: isDark ? '#8457AA' : '#8E4EC6',
+                      backgroundColor: 'white',
+                      height: 20,
+                      width: 20,
+                    },
+                    {
+                      borderColor: isDark ? '#8457AA' : '#8E4EC6',
+                      backgroundColor: 'white',
+                      height: 20,
+                      width: 20,
+                    },
+                  ]}
+                />
+              </div>
+
               <Flex justify='between' style={{ marginTop: 8 }}>
-                <span>{duration.min} min</span>
-                <span>{duration.max} min</span>
+                <span>{formatDurationLabel(duration.min)}</span>
+                <span>{formatDurationLabel(duration.max)}</span>
               </Flex>
             </div>
 
-            {/* Data de lançamento */}
             <div style={{ width: '100%' }}>
               <strong style={{ display: 'block', marginBottom: 8 }}>
                 Data de lançamento:

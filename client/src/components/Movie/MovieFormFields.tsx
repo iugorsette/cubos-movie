@@ -114,7 +114,7 @@ export default function MovieFormFields({
         />
         <MyInput
           label='Duração'
-          type='number'
+          type='duration'
           width='49.5%'
           value={form.duracao}
           error={errorFields.duracao}
