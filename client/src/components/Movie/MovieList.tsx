@@ -39,6 +39,10 @@ export default function MovieList() {
       classificacoesIndicativas: params.classificacoesIndicativas
         ? String(params.classificacoesIndicativas).split(',')
         : undefined,
+      minPopularity: params.minPopularity
+        ? Number(params.minPopularity)
+        : undefined,
+      generos: params.generos ? String(params.generos).split(',') : undefined,
     }
 
     movieStore.setFilters(filters)
