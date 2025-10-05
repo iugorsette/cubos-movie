@@ -45,6 +45,33 @@ export default function MovieModal({
     classificacaoIndicativa: CLASSIFICACAO_INDICATIVA[0],
     ...initialData,
   })
+  function resetForm() {
+    setForm({
+      titulo: '',
+      tituloOriginal: '',
+      subtitulo: '',
+      sinopse: '',
+      dataLancamento: '',
+      duracao: '',
+      generos: [],
+      popularidade: 0,
+      votos: 0,
+      idioma: '',
+      orcamento: 0,
+      receita: 0,
+      lucro: 0,
+      capaUrl: '',
+      capaFundo: '',
+      trailerUrl: '',
+      classificacaoIndicativa: CLASSIFICACAO_INDICATIVA[0],
+    })
+    setCapaFile(undefined)
+    setCapaFundoFile(undefined)
+    setCapaPreview(null)
+    setCapaFundoPreview(null)
+    setErrorFields({})
+  }
+
   const [capaFile, setCapaFile] = useState<File | undefined>()
   const [capaFundoFile, setCapaFundoFile] = useState<File | undefined>()
   const [capaPreview, setCapaPreview] = useState<string | null>(
@@ -130,6 +157,7 @@ export default function MovieModal({
         await movieStore.updateMovie(initialData.id, formData)
       } else {
         await movieStore.addMovie(formData)
+        resetForm() 
       }
 
       onSaved()
