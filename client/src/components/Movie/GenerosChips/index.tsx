@@ -3,7 +3,7 @@ import { useTheme } from '../../../hooks/useTheme'
 export default function GenerosChips({ generos }: { generos: string[] }) {
   const { isDark } = useTheme()
   const genreBg = isDark ? 'rgba(193, 80, 255, 0.18)' : '#8E4EC6'
-  const cardBg = isDark ? 'rgba(35, 34, 37, 0.75)' : '#f3f3f3'
+  const cardBg = isDark ? 'rgba(35, 34, 37, 0.75)' : '#f3f3f36c'
   const labelColor = isDark ? '#B5B2BC' : '#555'
 
   const valueColor = isDark ? '#eee' : '#111'

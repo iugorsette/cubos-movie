@@ -33,7 +33,7 @@ export default function MovieFormFields({
   setCapaFundoPreview,
 }: MovieFormFieldsProps) {
   const [generos, setGeneros] = useState(form.generos || [])
-
+  const isMobile = window.innerWidth <= 480
   const classificacaoOptions = CLASSIFICACAO_INDICATIVA.map((val) => ({
     value: val,
     label:
@@ -107,7 +107,7 @@ export default function MovieFormFields({
         <MyInput
           label='Data de Lançamento'
           type='date'
-          width='49.5%'
+          width={isMobile ? '100%' : '49.5%'}
           value={form.dataLancamento}
           error={errorFields.dataLancamento}
           onChange={(e) => handleChange('dataLancamento', e.target.value)}
@@ -115,7 +115,7 @@ export default function MovieFormFields({
         <MyInput
           label='Duração'
           type='duration'
-          width='49.5%'
+          width={isMobile ? '100%' : '49.5%'}
           value={form.duracao}
           error={errorFields.duracao}
           onChange={(e) => handleChange('duracao', e.target.value)}
@@ -131,27 +131,27 @@ export default function MovieFormFields({
 
         <MyInput
           label='Idioma'
-          width='49.5%'
+          width={isMobile ? '100%' : '49.5%'}
           value={form.idioma || ''}
           onChange={(e) => handleChange('idioma', e.target.value)}
         />
         <MyInput
           label='Orçamento'
-          width='49.5%'
+          width={isMobile ? '100%' : '49.5%'}
           type='currency'
           value={form.orcamento}
           onChange={(e) => handleChange('orcamento', Number(e.target.value))}
         />
         <MyInput
           label='Lucro'
-          width='49.5%'
+          width={isMobile ? '100%' : '49.5%'}
           type='currency'
           value={form.lucro}
           onChange={(e) => handleChange('lucro', Number(e.target.value))}
         />
         <MyInput
           label='Receita'
-          width='49.5%'
+          width={isMobile ? '100%' : '49.5%'}
           type='currency'
           value={form.receita || ''}
           onChange={(e) => handleChange('receita', Number(e.target.value))}
@@ -162,13 +162,13 @@ export default function MovieFormFields({
           value={form.classificacaoIndicativa}
           onChange={(val) => handleChange('classificacaoIndicativa', val)}
           options={classificacaoOptions}
-          width='49.5%'
+          width={isMobile ? '100%' : '49.5%'}
           error={errorFields.classificacaoIndicativa}
         />
         <MyInput
           label='Popularidade'
           type='percentage'
-          width='20.5%'
+          width={isMobile ? '30%' : '20.5%'}
           value={form.popularidade}
           onChange={(e) =>
             handleChange('popularidade', Math.min(Number(e.target.value), 100))
@@ -176,7 +176,7 @@ export default function MovieFormFields({
         />
         <MyInput
           label='Votos'
-          width='28%'
+          width={isMobile ? '67%' : '28%'}
           type='number'
           value={form.votos || ''}
           onChange={(e) => handleChange('votos', Number(e.target.value))}

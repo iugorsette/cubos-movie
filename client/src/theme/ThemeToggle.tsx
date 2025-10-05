@@ -9,13 +9,7 @@ export default function ThemeToggle() {
     <MyButton
       colorVariant='secondary'
       iconButton
-      icon={
-        isDark ? (
-          <SunIcon width={20} height={20} />
-        ) : (
-          <MoonIcon width={20} height={20} />
-        )
-      }
+      icon={isDark ? <SunIcon /> : <MoonIcon />}
       onClick={() => toggleTheme()}
     />
   )

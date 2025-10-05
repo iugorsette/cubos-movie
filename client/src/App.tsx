@@ -1,4 +1,4 @@
-import { Theme, ThemePanel } from '@radix-ui/themes'
+import { Theme } from '@radix-ui/themes'
 import Header from './components/Header'
 import { ThemeProvider } from './context/ThemeContext'
 import AppRoutes from './routes/AppRoutes'

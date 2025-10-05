@@ -3,7 +3,10 @@ import * as Dialog from '@radix-ui/react-dialog'
 import { Flex } from '@radix-ui/themes'
 import { Cross2Icon } from '@radix-ui/react-icons'
 import { useTheme } from '../../../hooks/useTheme'
-import { CLASSIFICACAO_INDICATIVA, type MovieFormData } from '../../../types/movie'
+import {
+  CLASSIFICACAO_INDICATIVA,
+  type MovieFormData,
+} from '../../../types/movie'
 import { movieStore } from '../../../stores/movie.store'
 import MyButton from '../../Button'
 import MovieFormFields from '../MovieFormFields'
@@ -150,8 +153,10 @@ export default function MovieModal({
         />
         <Dialog.Content
           style={{
-            background: isDark ? 'black' : 'white',
-            padding: '0 24px',
+            backgroundColor: isDark
+              ? 'rgba(35, 34, 37, 1)'
+              : 'rgba(255,255,255,0.9)',
+            padding: '0 0 0 24px',
             height: '100vh',
             width: '40%',
             position: 'fixed',
@@ -160,30 +165,32 @@ export default function MovieModal({
             boxShadow: '0px 10px 30px rgba(0,0,0,0.2)',
             transition: 'all 0.3s ease-in-out',
           }}
-          className='movie-modal'
-          >
+          className='movie-modal'>
           <div
             style={{
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center',
+              margin: '10px 10px 10px 0',
             }}>
-            <Dialog.Title style={{ fontSize: 20 }}>
+            <Dialog.Title style={{ fontSize: 20, margin: 0 }}>
               {initialData?.id ? 'Editar Filme' : 'Adicionar Filme'}
             </Dialog.Title>
             <Dialog.Close asChild>
               <button
                 style={{
                   all: 'unset',
+                  cursor: 'pointer',
                   borderRadius: '100%',
                   height: 25,
                   width: 25,
                   display: 'inline-flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  color: 'var(--violet-11)',
-                  backgroundColor: 'var(--gray-3)',
-                }}>
+                  backgroundColor: isDark ? '#333' : '#ccc',
+                  color: isDark ? '#f5f5f5' : '#111',
+                }}
+                aria-label='Close'>
                 <Cross2Icon />
               </button>
             </Dialog.Close>
@@ -192,9 +199,10 @@ export default function MovieModal({
           <div
             style={{
               flex: 1,
-              height: 'calc(100% - 130px)',
+              height: 'calc(100% - 110px)',
               overflowY: 'auto',
               marginTop: 16,
+              marginRight: 8,
             }}>
             <form
               ref={formRef}
@@ -221,7 +229,7 @@ export default function MovieModal({
               )}
             </form>
           </div>
-          <Flex justify='end' style={{ marginTop: 10, gap: 5 }}>
+          <Flex justify='end' style={{ margin: 10, gap: 5 }}>
             <Dialog.Close asChild>
               <MyButton type='button' colorVariant='secondary'>
                 Cancelar
@@ -229,6 +237,7 @@ export default function MovieModal({
             </Dialog.Close>
             <MyButton
               type='button'
+              colorVariant='primary'
               disabled={loading}
               onClick={() => formRef.current?.requestSubmit()}>
               {initialData?.id ? 'Salvar' : 'Adicionar'}

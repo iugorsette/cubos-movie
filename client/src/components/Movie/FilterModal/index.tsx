@@ -155,7 +155,7 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
               : 'rgba(255,255,255,0.9)',
             padding: '4px 24px',
             width: '50vw',
-            height: '65vh',
+            height: '85vh',
             position: 'fixed',
             top: '50%',
             left: '50%',
@@ -187,7 +187,7 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
               </button>
             </Dialog.Close>
           </Flex>
-          
+
           <Flex
             direction='column'
             style={{
@@ -196,13 +196,13 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
               gap: 24,
             }}>
             {/* Duração */}
-            <div style={{ width: '95%', margin: '0 auto' }}>
+            <div style={{ width: '98%', margin: '0 auto' }}>
               <strong style={{ display: 'block', marginBottom: 8 }}>
                 Duração (minutos):
               </strong>
-              <div style={{ position: 'relative', padding: '12px 0' }}>
+              <div style={{ position: 'relative', padding: '4px' }}>
                 <Slider
-                  style={{ margin: '12px 0' }}
+                  style={{ margin: 0 }}
                   range
                   min={SLIDER_MIN}
                   max={SLIDER_MAX}
@@ -241,7 +241,7 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
                 />
               </div>
 
-              <Flex justify='between' style={{ marginTop: 8 }}>
+              <Flex justify='between' style={{ marginTop: 4 }}>
                 <span>{formatDurationLabel(duration.min)}</span>
                 <span>{formatDurationLabel(duration.max)}</span>
               </Flex>
@@ -284,9 +284,9 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
               maxGeneros={10}
             />
 
-            <div style={{ width: '95%', margin: '0 auto' }}>
+            <div style={{ width: '98%', margin: '0 auto' }}>
               <strong style={{ display: 'block', marginBottom: 8 }}>
-                Popularidade mínima:
+                Popularidade mínima: <span>{minPopularity}</span>
               </strong>
               <Slider
                 min={0}
@@ -309,9 +309,6 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
                   height: 8,
                 }}
               />
-              <Flex justify='between' style={{ marginTop: 8 }}>
-                <span>{minPopularity}</span>
-              </Flex>
             </div>
 
             <div style={{ marginTop: 16 }}>
@@ -397,21 +394,18 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
             </div>
           </Flex>
 
-          <Flex
-            justify='end'
-            style={{
-              gap: 8,
-            }}
-            mt='3'>
+          <Flex justify='between' style={{ gap: 8, margin: '8px 0' }}>
             <MyButton colorVariant='secondary' onClick={resetFilters}>
               Limpar filtros
             </MyButton>
-            <Dialog.Close asChild>
-              <MyButton colorVariant='secondary'>Cancelar</MyButton>
-            </Dialog.Close>
-            <MyButton colorVariant='primary' onClick={applyFilters}>
-              Aplicar
-            </MyButton>
+            <Flex style={{ gap: 8 }}>
+              <Dialog.Close asChild>
+                <MyButton colorVariant='secondary'>Cancelar</MyButton>
+              </Dialog.Close>
+              <MyButton colorVariant='primary' onClick={applyFilters}>
+                Aplicar
+              </MyButton>
+            </Flex>
           </Flex>
         </Dialog.Content>
       </Dialog.Portal>

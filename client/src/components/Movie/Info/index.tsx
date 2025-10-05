@@ -19,7 +19,7 @@ export default function Info({
   type?: 'currency' | 'date' | 'duration' | 'ageRange' | string
 }) {
   const { isDark } = useTheme()
-  const cardBg = isDark ? 'rgba(35, 34, 37, 0.75)' : '#f3f3f3'
+  const cardBg = isDark ? 'rgba(35, 34, 37, 0.75)' : '#f3f3f36c'
   const labelColor = isDark ? '#B5B2BC' : '#555'
   const valueColor = isDark ? '#eee' : '#111'
 

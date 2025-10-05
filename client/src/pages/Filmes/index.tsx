@@ -48,7 +48,7 @@ export default function Filmes() {
         }}>
         <Flex style={{ flex: 1, minWidth: 200, maxWidth: 500 }}>
           <MyInput
-            placeholder='Pesquise por filmes...'
+            placeholder='Pesquise por filmes'
             value={search}
             onChange={(e) => {
               setSearch(e.target.value)
@@ -58,7 +58,7 @@ export default function Filmes() {
           />
         </Flex>
 
-        <Flex gap='2' style={{ flexWrap: 'wrap', marginTop: 8 }}>
+        <Flex gap='2' style={{ flexWrap: 'wrap' }}>
           <MyButton
             colorVariant='secondary'
             onClick={() => setFiltersOpen(true)}>
