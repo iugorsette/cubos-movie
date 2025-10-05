@@ -63,6 +63,7 @@ export class MovieController {
     @Query('minDuration') minDuration?: string,
     @Query('maxDuration') maxDuration?: string,
     @Query('startDate') startDate?: string,
+    @Query('minPopularity') minPopularity?: string,
     @Query('endDate') endDate?: string,
   ) {
     const parsedGeneros = generos?.split(',') || [];
@@ -79,6 +80,7 @@ export class MovieController {
       minDuration: minDuration ? Number(minDuration) : undefined,
       maxDuration: maxDuration ? Number(maxDuration) : undefined,
       startDate,
+      minPopularity: minPopularity ? Number(minPopularity) : undefined,
       endDate,
       userId: req.user.id,
     });

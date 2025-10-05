@@ -249,6 +249,7 @@ export class MovieService {
     order?: 'asc' | 'desc';
     minDuration?: number;
     maxDuration?: number;
+    minPopularity?: number;
     startDate?: string;
     endDate?: string;
     userId?: string;
@@ -266,6 +267,10 @@ export class MovieService {
 
     if (userId) AND.push({ user: { id: userId } });
 
+    if (filters.minPopularity) {
+      AND.push({ popularidade: { gte: Number(filters.minPopularity) } });
+    }
+
     if (filters.classificacoes && Array.isArray(filters.classificacoes)) {
       const validClassifs = filters.classificacoes.filter(
         (c) => c && c.trim() !== '',
@@ -282,8 +287,11 @@ export class MovieService {
           { tituloOriginal: { contains: filters.search, mode: 'insensitive' } },
         ],
       });
-    if (filters.generos?.length)
-      AND.push({ generos: { hasSome: filters.generos } });
+    const validGeneros =
+      filters.generos?.filter((g) => g && g.trim() !== '') || [];
+    if (validGeneros.length > 0) {
+      AND.push({ generos: { hasSome: validGeneros } });
+    }
     if (filters.minDuration || filters.maxDuration)
       AND.push({
         duracao: {

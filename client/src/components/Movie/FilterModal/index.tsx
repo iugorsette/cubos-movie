@@ -3,10 +3,7 @@ import * as Dialog from '@radix-ui/react-dialog'
 import * as Checkbox from '@radix-ui/react-checkbox'
 import { Flex } from '@radix-ui/themes'
 import MyButton from '../../Button'
-import {
-  Cross2Icon,
-  CheckIcon,
-} from '@radix-ui/react-icons'
+import { Cross2Icon, CheckIcon } from '@radix-ui/react-icons'
 import { useTheme } from '../../../hooks/useTheme'
 import MyInput from '../../Input'
 import Slider from 'rc-slider'
@@ -16,6 +13,7 @@ import './index.css'
 import type { ClassificacaoIndicativa } from '../../../types/movie'
 import { movieStore } from '../../../stores/movie.store'
 import MySelect from '../../Select'
+import GenerosField from '../GeneroFields'
 type FilterModalProps = {
   isOpen: boolean
   onClose: () => void
@@ -46,8 +44,11 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
   const [duration, setDuration] = useState({ min: 0, max: 300 })
   const [dateRange, setDateRange] = useState({ start: '', end: '' })
   const [searchParams, setSearchParams] = useSearchParams()
+  const [generos, setGeneros] = useState<string[]>([])
   const SLIDER_MIN = 0
   const SLIDER_MAX = 300
+  const [minPopularity, setMinPopularity] = useState(0)
+  const POPULARITY_MAX = 100
 
   function formatDurationLabel(minutes: number) {
     if (minutes === null || minutes === undefined || isNaN(minutes)) return '-'
@@ -88,6 +89,8 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
                 .map((v) => v as ClassificacaoIndicativa)
           : []
       )
+      setGeneros(params.generos ? String(params.generos).split(',') : [])
+      setMinPopularity(params.minPopularity ? Number(params.minPopularity) : 0)
     }
   }, [isOpen])
   function resetFilters() {
@@ -111,8 +114,10 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
       classificacoesIndicativas: classificacoes,
       minDuration: duration.min,
       maxDuration: duration.max,
+      minPopularity,
       startDate: dateRange.start,
       endDate: dateRange.end,
+      generos,
     }
 
     movieStore.setFilters(filters)
@@ -127,7 +132,8 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
     }
     if (classificacoes.length > 0)
       params.classificacoesIndicativas = classificacoes.join(',')
-
+    if (generos.length) params.generos = generos.join(',')
+    if (minPopularity > 0) params.minPopularity = minPopularity
     setSearchParams(params)
     onClose()
   }
@@ -148,8 +154,8 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
               ? 'rgba(35, 34, 37, 1)'
               : 'rgba(255,255,255,0.9)',
             padding: '4px 24px',
-            width: '40vw',
-            height: '55vh',
+            width: '50vw',
+            height: '65vh',
             position: 'fixed',
             top: '50%',
             left: '50%',
@@ -181,6 +187,7 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
               </button>
             </Dialog.Close>
           </Flex>
+          
           <Flex
             direction='column'
             style={{
@@ -271,37 +278,40 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
                 />
               </div>
             </div>
+            <GenerosField
+              generos={generos}
+              setGeneros={setGeneros}
+              maxGeneros={10}
+            />
 
-            <div
-              style={{
-                display: 'flex',
-                gap: 12,
-                flexWrap: 'wrap',
-                width: '100%',
-              }}>
-              <strong style={{ width: '100%' }}>Ordenar por:</strong>
-              <MySelect
-                label='Ordenar por'
-                value={sortBy}
-                onChange={(val) => setSortBy(val as SortBy)}
-                options={[
-                  { value: 'titulo', label: 'Título' },
-                  { value: 'dataLancamento', label: 'Data de Lançamento' },
-                  { value: 'popularidade', label: 'Popularidade' },
-                ]}
-                width='48%'
+            <div style={{ width: '95%', margin: '0 auto' }}>
+              <strong style={{ display: 'block', marginBottom: 8 }}>
+                Popularidade mínima:
+              </strong>
+              <Slider
+                min={0}
+                max={POPULARITY_MAX}
+                step={1}
+                value={minPopularity}
+                onChange={(val) => setMinPopularity(val as number)}
+                trackStyle={{
+                  backgroundColor: isDark ? '#8457AA' : '#8E4EC6',
+                  height: 8,
+                }}
+                handleStyle={{
+                  borderColor: isDark ? '#8457AA' : '#8E4EC6',
+                  backgroundColor: 'white',
+                  height: 20,
+                  width: 20,
+                }}
+                railStyle={{
+                  backgroundColor: isDark ? '#444' : '#ccc',
+                  height: 8,
+                }}
               />
-
-              <MySelect
-                label='Ordem'
-                value={order}
-                onChange={(val) => setOrder(val as SortOrder)}
-                options={[
-                  { value: 'asc', label: 'Ascendente' },
-                  { value: 'desc', label: 'Descendente' },
-                ]}
-                width='48%'
-              />
+              <Flex justify='between' style={{ marginTop: 8 }}>
+                <span>{minPopularity}</span>
+              </Flex>
             </div>
 
             <div style={{ marginTop: 16 }}>
@@ -353,8 +363,40 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
                 ))}
               </div>
             </div>
+
+            <div
+              style={{
+                display: 'flex',
+                gap: 12,
+                flexWrap: 'wrap',
+                width: '100%',
+              }}>
+              <strong style={{ width: '100%' }}>Ordenar por:</strong>
+              <MySelect
+                label='Ordenar por'
+                value={sortBy}
+                onChange={(val) => setSortBy(val as SortBy)}
+                options={[
+                  { value: 'titulo', label: 'Título' },
+                  { value: 'dataLancamento', label: 'Data de Lançamento' },
+                  { value: 'popularidade', label: 'Popularidade' },
+                ]}
+                width='48%'
+              />
+
+              <MySelect
+                label='Ordem'
+                value={order}
+                onChange={(val) => setOrder(val as SortOrder)}
+                options={[
+                  { value: 'asc', label: 'Ascendente' },
+                  { value: 'desc', label: 'Descendente' },
+                ]}
+                width='48%'
+              />
+            </div>
           </Flex>
-          
+
           <Flex
             justify='end'
             style={{
@@ -371,7 +413,6 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
               Aplicar
             </MyButton>
           </Flex>
-
         </Dialog.Content>
       </Dialog.Portal>
     </Dialog.Root>
