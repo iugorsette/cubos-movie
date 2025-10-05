@@ -1,14 +1,11 @@
 import { useState, useEffect } from 'react'
 import * as Dialog from '@radix-ui/react-dialog'
-import * as Select from '@radix-ui/react-select'
 import * as Checkbox from '@radix-ui/react-checkbox'
 import { Flex } from '@radix-ui/themes'
 import MyButton from '../../Button'
 import {
   Cross2Icon,
   CheckIcon,
-  ChevronDownIcon,
-  ChevronUpIcon,
 } from '@radix-ui/react-icons'
 import { useTheme } from '../../../hooks/useTheme'
 import MyInput from '../../Input'
@@ -18,6 +15,7 @@ import { useSearchParams } from 'react-router-dom'
 import './index.css'
 import type { ClassificacaoIndicativa } from '../../../types/movie'
 import { movieStore } from '../../../stores/movie.store'
+import MySelect from '../../Select'
 type FilterModalProps = {
   isOpen: boolean
   onClose: () => void
@@ -191,7 +189,7 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
               gap: 24,
             }}>
             {/* Duração */}
-            <div style={{ width: '90%' }}>
+            <div style={{ width: '95%', margin: '0 auto' }}>
               <strong style={{ display: 'block', marginBottom: 8 }}>
                 Duração (minutos):
               </strong>
@@ -282,117 +280,30 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
                 width: '100%',
               }}>
               <strong style={{ width: '100%' }}>Ordenar por:</strong>
-
-              <Select.Root
+              <MySelect
+                label='Ordenar por'
                 value={sortBy}
-                onValueChange={(val) => setSortBy(val as any)}>
-                <Select.Trigger
-                  style={{
-                    height: 36,
-                    fontSize: 14,
-                    padding: '0 12px',
-                    borderRadius: 6,
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    backgroundColor: isDark ? '#222' : '#fff',
-                    color: isDark ? '#f5f5f5' : '#111',
-                    border: `1px solid ${isDark ? '#444' : '#ccc'}`,
-                    cursor: 'pointer',
-                    width: '48%',
-                  }}>
-                  <Select.Value placeholder='Selecionar...' />
-                  <Select.Icon>
-                    <ChevronDownIcon />
-                  </Select.Icon>
-                </Select.Trigger>
-                <Select.Portal>
-                  <Select.Content
-                    style={{
-                      backgroundColor: isDark ? '#222' : '#fff',
-                      borderRadius: 6,
-                      border: `1px solid ${isDark ? '#444' : '#ccc'}`,
-                    }}>
-                    <Select.ScrollUpButton>
-                      <ChevronUpIcon />
-                    </Select.ScrollUpButton>
-                    <Select.Viewport>
-                      <Select.Item value='titulo'>
-                        <Select.ItemText>Título</Select.ItemText>
-                        <Select.ItemIndicator>
-                          <CheckIcon />
-                        </Select.ItemIndicator>
-                      </Select.Item>
-                      <Select.Item value='dataLancamento'>
-                        <Select.ItemText>Data de Lançamento</Select.ItemText>
-                        <Select.ItemIndicator>
-                          <CheckIcon />
-                        </Select.ItemIndicator>
-                      </Select.Item>
-                      <Select.Item value='popularidade'>
-                        <Select.ItemText>Popularidade</Select.ItemText>
-                        <Select.ItemIndicator>
-                          <CheckIcon />
-                        </Select.ItemIndicator>
-                      </Select.Item>
-                    </Select.Viewport>
-                    <Select.ScrollDownButton>
-                      <ChevronDownIcon />
-                    </Select.ScrollDownButton>
-                  </Select.Content>
-                </Select.Portal>
-              </Select.Root>
+                onChange={(val) => setSortBy(val as SortBy)}
+                options={[
+                  { value: 'titulo', label: 'Título' },
+                  { value: 'dataLancamento', label: 'Data de Lançamento' },
+                  { value: 'popularidade', label: 'Popularidade' },
+                ]}
+                width='48%'
+              />
 
-              <Select.Root
+              <MySelect
+                label='Ordem'
                 value={order}
-                onValueChange={(val) => setOrder(val as any)}>
-                <Select.Trigger
-                  style={{
-                    height: 36,
-                    fontSize: 14,
-                    padding: '0 12px',
-                    borderRadius: 6,
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    backgroundColor: isDark ? '#222' : '#fff',
-                    color: isDark ? '#f5f5f5' : '#111',
-                    border: `1px solid ${isDark ? '#444' : '#ccc'}`,
-                    cursor: 'pointer',
-                    width: '48%',
-                  }}>
-                  <Select.Value placeholder='Selecionar...' />
-                  <Select.Icon>
-                    <ChevronDownIcon />
-                  </Select.Icon>
-                </Select.Trigger>
-                <Select.Portal>
-                  <Select.Content
-                    style={{
-                      backgroundColor: isDark ? '#222' : '#fff',
-                      borderRadius: 6,
-                      border: `1px solid ${isDark ? '#444' : '#ccc'}`,
-                    }}>
-                    <Select.Viewport>
-                      <Select.Item value='asc'>
-                        <Select.ItemText>Ascendente</Select.ItemText>
-                        <Select.ItemIndicator>
-                          <CheckIcon />
-                        </Select.ItemIndicator>
-                      </Select.Item>
-                      <Select.Item value='desc'>
-                        <Select.ItemText>Descendente</Select.ItemText>
-                        <Select.ItemIndicator>
-                          <CheckIcon />
-                        </Select.ItemIndicator>
-                      </Select.Item>
-                    </Select.Viewport>
-                  </Select.Content>
-                </Select.Portal>
-              </Select.Root>
+                onChange={(val) => setOrder(val as SortOrder)}
+                options={[
+                  { value: 'asc', label: 'Ascendente' },
+                  { value: 'desc', label: 'Descendente' },
+                ]}
+                width='48%'
+              />
             </div>
 
-            {/* Classificação indicativa */}
             <div style={{ marginTop: 16 }}>
               <strong style={{ display: 'block', marginBottom: 8 }}>
                 Classificação indicativa:
@@ -443,7 +354,7 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
               </div>
             </div>
           </Flex>
-          {/* Footer */}
+          
           <Flex
             justify='end'
             style={{
@@ -460,6 +371,7 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
               Aplicar
             </MyButton>
           </Flex>
+
         </Dialog.Content>
       </Dialog.Portal>
     </Dialog.Root>
