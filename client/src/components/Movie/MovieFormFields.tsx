@@ -6,6 +6,7 @@ import MyButton from '../Button'
 import { CLASSIFICACAO_INDICATIVA, type MovieFormData } from '../../types/movie'
 import { useState } from 'react'
 import { useTheme } from '../../hooks/useTheme'
+import MySelect from '../Select'
 
 type MovieFormFieldsProps = {
   form: MovieFormData
@@ -37,6 +38,19 @@ export default function MovieFormFields({
   const [generos, setGeneros] = useState(form.generos || [])
   const [newGenero, setNewGenero] = useState('')
   const { isDark } = useTheme()
+
+  const classificacaoOptions = CLASSIFICACAO_INDICATIVA.map((val) => ({
+    value: val,
+    label:
+      {
+        LIVRE: 'Livre',
+        DEZ: '10 anos',
+        DOZE: '12 anos',
+        CATORZE: '14 anos',
+        DEZESSEIS: '16 anos',
+        DEZOITO: '18 anos',
+      }[val] || val,
+  }))
 
   function addGenero() {
     const g = newGenero.trim()
@@ -111,20 +125,101 @@ export default function MovieFormFields({
         <MyInput
           label='Data de Lançamento'
           type='date'
-          width='48%'
+          width='49.5%'
           value={form.dataLancamento}
           error={errorFields.dataLancamento}
           onChange={(e) => handleChange('dataLancamento', e.target.value)}
         />
         <MyInput
           label='Duração'
-          width='48%'
+          type='number'
+          width='49.5%'
           value={form.duracao}
           error={errorFields.duracao}
           onChange={(e) => handleChange('duracao', e.target.value)}
         />
 
-        <Select.Root
+        <div
+          style={{
+            width: '100%',
+          }}>
+          <strong>Gêneros</strong>
+          <Flex
+            wrap='wrap'
+            style={{
+              display: 'flex',
+              gap: '4px',
+            }}>
+            {generos.map((g) => (
+              <div
+                key={g}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  padding: '0 12px',
+                  borderRadius: '2px',
+                  backgroundColor: '#8E4EC6',
+                  color: '#fff',
+                  gap: '4px',
+                }}>
+                {g}
+                <MyButton type='button' onClick={() => removeGenero(g)}>
+                  ×
+                </MyButton>
+              </div>
+            ))}
+            {generos.length < 10 && (
+              <div
+                style={{
+                  display: 'flex',
+                }}>
+                <MyInput
+                  value={newGenero}
+                  onChange={(e) => setNewGenero(e.target.value)}
+                  placeholder='Novo gênero'
+                />
+                <MyButton
+                  colorVariant='primary'
+                  type='button'
+                  onClick={addGenero}
+                  iconButton
+                  icon={<PlusIcon />}
+                />
+              </div>
+            )}
+          </Flex>
+        </div>
+
+        <MyInput
+          label='Idioma'
+          width='49.5%'
+          value={form.idioma || ''}
+          onChange={(e) => handleChange('idioma', e.target.value)}
+        />
+        <MyInput
+          label='Orçamento'
+          type='number'
+          width='49.5%'
+          value={form.orcamento || ''}
+          onChange={(e) => handleChange('orcamento', Number(e.target.value))}
+        />
+        <MyInput
+          label='Lucro'
+          width='49.5%'
+          type='number'
+          value={form.lucro || ''}
+          onChange={(e) => handleChange('lucro', Number(e.target.value))}
+        />
+        <MyInput
+          label='Receita'
+          width='49.5%'
+          type='currency'
+          value={form.receita || ''}
+          onChange={(e) => handleChange('receita', Number(e.target.value))}
+        />
+
+        {/* faltando titulo "Clasficiacaoindicativa" */}
+        {/* <Select.Root
           value={form.classificacaoIndicativa}
           onValueChange={(value) =>
             handleChange('classificacaoIndicativa', value)
@@ -144,7 +239,7 @@ export default function MovieFormFields({
               color: isDark ? '#fff' : '#000',
               borderRadius: 4,
               border: '1px solid #ccc',
-              width: '100%',
+              width: '44%',
             }}>
             <Select.Value placeholder='Selecione...' />
             <Select.Icon>
@@ -190,83 +285,25 @@ export default function MovieFormFields({
               ))}
             </Select.Viewport>
           </Select.Content>
-        </Select.Root>
-
-        <div>
-          <strong>Gêneros</strong>
-          <Flex wrap='wrap' style={{ gap: 4 }}>
-            {generos.map((g) => (
-              <div
-                key={g}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  padding: '4px 12px',
-                  borderRadius:'2px',
-                  backgroundColor: '#8E4EC6',
-                  color: '#fff',
-                }}>
-                {g}
-                <button type='button' onClick={() => removeGenero(g)}>
-                  ×
-                </button>
-              </div>
-            ))}
-            {generos.length < 10 && (
-              <>
-                <MyInput
-                  value={newGenero}
-                  onChange={(e) => setNewGenero(e.target.value)}
-                  placeholder='Novo gênero'
-                />
-                <MyButton
-                  type='button'
-                  onClick={addGenero}
-                  iconButton
-                  icon={<PlusIcon />}
-                />
-              </>
-            )}
-          </Flex>
-        </div>
-
-        <MyInput
-          label='Idioma'
-          width='48%'
-          value={form.idioma || ''}
-          onChange={(e) => handleChange('idioma', e.target.value)}
-        />
-        <MyInput
-          label='Orçamento'
-          type='number'
-          width='48%'
-          value={form.orcamento || ''}
-          onChange={(e) => handleChange('orcamento', Number(e.target.value))}
-        />
-        <MyInput
-          label='Lucro'
-          width='48%'
-          type='number'
-          value={form.lucro || ''}
-          onChange={(e) => handleChange('lucro', Number(e.target.value))}
-        />
-        <MyInput
-          label='Receita'
-          width='48%'
-          type='currency'
-          value={form.receita || ''}
-          onChange={(e) => handleChange('receita', Number(e.target.value))}
+        </Select.Root> */}
+        <MySelect
+          label='Classificação Indicativa'
+          value={form.classificacaoIndicativa}
+          onChange={(val) => handleChange('classificacaoIndicativa', val)}
+          options={classificacaoOptions}
+          width='49.5%'
+          error={errorFields.classificacaoIndicativa}
         />
         <MyInput
           label='Popularidade'
-          width='48%'
+          width='20%'
           type='number'
           value={form.popularidade || ''}
           onChange={(e) => handleChange('popularidade', Number(e.target.value))}
         />
         <MyInput
           label='Votos'
-          width='48%'
+          width='29%'
           type='number'
           value={form.votos || ''}
           onChange={(e) => handleChange('votos', Number(e.target.value))}
