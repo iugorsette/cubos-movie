@@ -1,12 +1,9 @@
 import { Flex } from '@radix-ui/themes'
-import * as Select from '@radix-ui/react-select'
-import { CheckIcon, ChevronDownIcon, PlusIcon } from '@radix-ui/react-icons'
 import MyInput from '../Input'
-import MyButton from '../Button'
 import { CLASSIFICACAO_INDICATIVA, type MovieFormData } from '../../types/movie'
 import { useState } from 'react'
-import { useTheme } from '../../hooks/useTheme'
 import MySelect from '../Select'
+import GenerosField from './GeneroFields'
 
 type MovieFormFieldsProps = {
   form: MovieFormData
@@ -36,8 +33,6 @@ export default function MovieFormFields({
   setCapaFundoPreview,
 }: MovieFormFieldsProps) {
   const [generos, setGeneros] = useState(form.generos || [])
-  const [newGenero, setNewGenero] = useState('')
-  const { isDark } = useTheme()
 
   const classificacaoOptions = CLASSIFICACAO_INDICATIVA.map((val) => ({
     value: val,
@@ -51,19 +46,6 @@ export default function MovieFormFields({
         DEZOITO: '18 anos',
       }[val] || val,
   }))
-
-  function addGenero() {
-    const g = newGenero.trim()
-    if (!g || generos.includes(g) || generos.length >= 10) return
-    setGeneros([...generos, g])
-    setForm((prev: any) => ({ ...prev, generos: [...generos, g] }))
-    setNewGenero('')
-  }
-  function removeGenero(g: string) {
-    const updated = generos.filter((x) => x !== g)
-    setGeneros(updated)
-    setForm((prev: any) => ({ ...prev, generos: updated }))
-  }
 
   return (
     <Flex direction='column' style={{ gap: 8 }}>
@@ -139,56 +121,13 @@ export default function MovieFormFields({
           onChange={(e) => handleChange('duracao', e.target.value)}
         />
 
-        <div
-          style={{
-            width: '100%',
-          }}>
-          <strong>Gêneros</strong>
-          <Flex
-            wrap='wrap'
-            style={{
-              display: 'flex',
-              gap: '4px',
-            }}>
-            {generos.map((g) => (
-              <div
-                key={g}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  padding: '0 12px',
-                  borderRadius: '2px',
-                  backgroundColor: '#8E4EC6',
-                  color: '#fff',
-                  gap: '4px',
-                }}>
-                {g}
-                <MyButton type='button' onClick={() => removeGenero(g)}>
-                  ×
-                </MyButton>
-              </div>
-            ))}
-            {generos.length < 10 && (
-              <div
-                style={{
-                  display: 'flex',
-                }}>
-                <MyInput
-                  value={newGenero}
-                  onChange={(e) => setNewGenero(e.target.value)}
-                  placeholder='Novo gênero'
-                />
-                <MyButton
-                  colorVariant='primary'
-                  type='button'
-                  onClick={addGenero}
-                  iconButton
-                  icon={<PlusIcon />}
-                />
-              </div>
-            )}
-          </Flex>
-        </div>
+        <GenerosField
+          generos={generos}
+          setGeneros={(updated) => {
+            setGeneros(updated)
+            setForm((prev: any) => ({ ...prev, generos: updated }))
+          }}
+        />
 
         <MyInput
           label='Idioma'
@@ -198,16 +137,16 @@ export default function MovieFormFields({
         />
         <MyInput
           label='Orçamento'
-          type='number'
           width='49.5%'
-          value={form.orcamento || ''}
+          type='currency'
+          value={form.orcamento}
           onChange={(e) => handleChange('orcamento', Number(e.target.value))}
         />
         <MyInput
           label='Lucro'
           width='49.5%'
-          type='number'
-          value={form.lucro || ''}
+          type='currency'
+          value={form.lucro}
           onChange={(e) => handleChange('lucro', Number(e.target.value))}
         />
         <MyInput
@@ -218,74 +157,6 @@ export default function MovieFormFields({
           onChange={(e) => handleChange('receita', Number(e.target.value))}
         />
 
-        {/* faltando titulo "Clasficiacaoindicativa" */}
-        {/* <Select.Root
-          value={form.classificacaoIndicativa}
-          onValueChange={(value) =>
-            handleChange('classificacaoIndicativa', value)
-          }>
-          <Select.Trigger
-            aria-label='Classificação Indicativa'
-            style={{
-              all: 'unset',
-              display: 'inline-flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              padding: '0 10px',
-              fontSize: 13,
-              lineHeight: 1,
-              height: 35,
-              backgroundColor: isDark ? '#222' : '#fff',
-              color: isDark ? '#fff' : '#000',
-              borderRadius: 4,
-              border: '1px solid #ccc',
-              width: '44%',
-            }}>
-            <Select.Value placeholder='Selecione...' />
-            <Select.Icon>
-              <ChevronDownIcon />
-            </Select.Icon>
-          </Select.Trigger>
-
-          <Select.Content
-            style={{
-              overflow: 'hidden',
-              backgroundColor: isDark ? '#333' : '#fff',
-              borderRadius: 6,
-              border: '1px solid #ccc',
-              zIndex: 1000,
-            }}>
-            <Select.Viewport>
-              {CLASSIFICACAO_INDICATIVA.map((val) => (
-                <Select.Item
-                  key={val}
-                  value={val}
-                  style={{
-                    padding: '5px 10px',
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                  }}>
-                  <Select.ItemText>
-                    {
-                      {
-                        LIVRE: 'Livre',
-                        DEZ: '10 anos',
-                        DOZE: '12 anos',
-                        CATORZE: '14 anos',
-                        DEZESSEIS: '16 anos',
-                        DEZOITO: '18 anos',
-                      }[val]
-                    }
-                  </Select.ItemText>
-                  <Select.ItemIndicator>
-                    <CheckIcon />
-                  </Select.ItemIndicator>
-                </Select.Item>
-              ))}
-            </Select.Viewport>
-          </Select.Content>
-        </Select.Root> */}
         <MySelect
           label='Classificação Indicativa'
           value={form.classificacaoIndicativa}
@@ -296,14 +167,16 @@ export default function MovieFormFields({
         />
         <MyInput
           label='Popularidade'
-          width='20%'
-          type='number'
-          value={form.popularidade || ''}
-          onChange={(e) => handleChange('popularidade', Number(e.target.value))}
+          type='percentage'
+          width='20.5%'
+          value={form.popularidade}
+          onChange={(e) =>
+            handleChange('popularidade', Math.min(Number(e.target.value), 100))
+          }
         />
         <MyInput
           label='Votos'
-          width='29%'
+          width='28%'
           type='number'
           value={form.votos || ''}
           onChange={(e) => handleChange('votos', Number(e.target.value))}
@@ -314,8 +187,6 @@ export default function MovieFormFields({
           value={form.trailerUrl || ''}
           onChange={(e) => handleChange('trailerUrl', e.target.value)}
         />
-
-        {/* {error && <div style={{ color: '#E11D48', fontSize: 13 }}>{error}</div>} */}
       </Flex>
     </Flex>
   )
