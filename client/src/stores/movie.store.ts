@@ -3,6 +3,7 @@ import type { Movie, ClassificacaoIndicativa } from '../types/movie'
 import {
   createMovie,
   deleteMovie,
+  getMovieById,
   getMovies,
   updateMovie,
 } from '../services/movies.service'
@@ -37,11 +38,11 @@ class MovieStore {
 
   clearFilters() {
     this.filters = {
-    take: 10,
-    skip: 0,
-    sortBy: 'dataLancamento',
-    order: 'desc',
-  }
+      take: 10,
+      skip: 0,
+      sortBy: 'dataLancamento',
+      order: 'desc',
+    }
     this.fetchMovies()
   }
   setFilters(filters: MovieFilters) {
@@ -49,6 +50,15 @@ class MovieStore {
     this.fetchMovies()
   }
 
+  async fetchMovieById(id: string): Promise<Movie | null> {
+    try {
+      const movie = await getMovieById(id)
+      return movie
+    } catch (err) {
+      console.error('Erro ao buscar filme:', err)
+      return null
+    }
+  }
   async fetchMovies() {
     const data = await getMovies(this.filters)
     this.moviesSubject.next(data.movies)

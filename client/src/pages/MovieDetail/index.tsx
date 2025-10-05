@@ -1,7 +1,11 @@
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { Flex, Text } from '@radix-ui/themes'
-import { deleteMovie, getMovieById } from '../../services/movies.service'
+import {
+  deleteMovie,
+  getMovieById,
+  setGetToken,
+} from '../../services/movies.service'
 import type { Movie } from '../../types/movie'
 import { useTheme } from '../../hooks/useTheme'
 import MovieModal from '../../components/Movie/MovieModal'
@@ -12,6 +16,7 @@ import GenerosChips from '../../components/Movie/GenerosChips'
 import Info from '../../components/Movie/Info'
 import MyButton from '../../components/Button'
 import { ConfirmDeleteModal } from '../../components/ConfirmDeleteModal'
+import { movieStore } from '../../stores/movie.store'
 
 export default function MovieDetail() {
   const { id } = useParams()
@@ -21,7 +26,8 @@ export default function MovieDetail() {
   const [movie, setMovie] = useState<Movie | null>(null)
   const [editOpen, setEditOpen] = useState(false)
   const [deleteOpen, setDeleteOpen] = useState(false)
-
+  setGetToken(() => localStorage.getItem('token'))
+  
   const handleDelete = async () => {
     if (!id || !token) return
     try {
@@ -36,7 +42,14 @@ export default function MovieDetail() {
   const isMobile = window.innerWidth <= 480
 
   useEffect(() => {
-    if (id) fetchMovie()
+    if (!id) return
+
+    const fetchMovie = async () => {
+      const data = await movieStore.fetchMovieById(id)
+      if (data) setMovie(data)
+    }
+
+    fetchMovie()
   }, [id])
 
   async function fetchMovie() {
@@ -64,7 +77,7 @@ export default function MovieDetail() {
           backgroundPosition: 'center',
           padding: isMobile ? '15px' : '40px 60px',
           display: 'flex',
-          flexDirection:  'column',
+          flexDirection: 'column',
           gap: '32px',
           position: 'relative',
         }}>

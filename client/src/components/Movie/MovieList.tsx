@@ -95,6 +95,7 @@ export default function MovieList() {
               title={movie.titulo}
               generos={movie.generos}
               popularidade={movie.popularidade}
+              trailerUrl={movie.trailerUrl}
               id={movie.id as string}
               cover={movie.capaUrl}
             />
@@ -104,12 +105,12 @@ export default function MovieList() {
 
       {totalPages > 1 && (
         <Flex justify='center' gap='2' mt='4' wrap='wrap'>
-          <Button
+          <MyButton
             disabled={page === 1}
             onClick={() => goToPage(page - 1)}
             variant='outline'>
             <ChevronLeftIcon />
-          </Button>
+          </MyButton>
 
           {getPageButtons().map((p, i) =>
             typeof p === 'number' ? (
@@ -126,12 +127,12 @@ export default function MovieList() {
             )
           )}
 
-          <Button
+          <MyButton
             disabled={page === totalPages}
             onClick={() => goToPage(page + 1)}
             variant='outline'>
             <ChevronRightIcon />
-          </Button>
+          </MyButton>
         </Flex>
       )}
     </div>
