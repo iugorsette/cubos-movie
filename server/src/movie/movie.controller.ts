@@ -75,7 +75,7 @@ export class MovieController {
       search,
       generos: parsedGeneros,
       classificacoes: parsedClassificacoes,
-      sortBy,
+      sortBy: sortBy ? sortBy : 'dataLancamento',
       order,
       minDuration: minDuration ? Number(minDuration) : undefined,
       maxDuration: maxDuration ? Number(maxDuration) : undefined,
