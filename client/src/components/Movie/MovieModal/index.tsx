@@ -240,7 +240,13 @@ export default function MovieModal({
               colorVariant='primary'
               disabled={loading}
               onClick={() => formRef.current?.requestSubmit()}>
-              {initialData?.id ? 'Salvar' : 'Adicionar'}
+              {loading
+                ? initialData?.id
+                  ? 'Salvando...'
+                  : 'Adicionando...'
+                : initialData?.id
+                ? 'Salvar'
+                : 'Adicionar'}
             </MyButton>
           </Flex>
         </Dialog.Content>
